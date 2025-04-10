@@ -1,0 +1,143 @@
+app:
+  iam:
+    internal-url: http://localhost:8081
+#  services:
+#    storage:
+#      private: http://localhost:8082/api/private/files
+#      public: http://localhost:8082/api/public/files
+
+server:
+  port: 8081
+  forward-headers-strategy: framework
+  servlet:
+    context-path: /api/v1
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
+
+keycloak:
+  enabled: false
+  realm: EvoMovie
+  auth-server-url: http://localhost:8080
+  client:
+    id: iam-service-client
+    secret: VzuvaMvXddYP6YaXnRQVhz4gkLtiUGvh
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/iam-db
+    username: postgres
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    auditor-aware-ref: auditorAwareImp
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
+  #  mail:
+#    host: sandbox.smtp.mailtrap.io
+#    port: 2525
+#    username: cb9b9078d8efbf
+#    password: 472c361eaa061d
+#    protocol: smtp
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#          timeout: 5000
+  security:
+    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 634041233114-cbhbkjk9pnro4pp22oekq3kgltov973n.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - openid
+#              - profile
+#              - email
+#            redirect-uri: "http://localhost:8081/login/oauth2/code/google"
+#        provider:
+#          google:
+#            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/EvoMovie
+          jwk-set-uri: ${spring.security.oauth2.resource-server.jwt.issuer-uri}/protocol/openid-connect/certs
+          jwk-set-uris:
+            sso: http://localhost:8080/realms/EvoMovie/protocol/openid-connect/certs
+            internal: http://localhost:8081/api/v1/certificate/.well-known/jwks.json
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs/iam
+
+#eureka:
+#  instance:
+#    hostname: localhost
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+
+#management:
+#  health:
+#    circuitbreaker:
+#      enable: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      show-details: always
+#
+#resilience4j:
+#  circuitbreaker:
+#    instances:
+#      storage:
+#        # báo cáo trạng thái của các circuit breaker
+#        # - CLOSED: cho phép mọi request
+#        # - OPEN: chặn mọi request
+#        # - HALF-OPEN: cho phép thử nghiệm lại request sau trạng thái OPEN - kiểm tra service đã phục hồi chưa
+#        registerHealthIndicator: true
+#        event-consumer-buffer-size: 10
+#        # theo dõi các request, tính toán kết quả dựa trên số lượng request được gửi tới gần nhất
+#        slidingWindowType: COUNT_BASED
+#        # tính toán kết quả dựa trên 10 request gần nhất
+#        slidingWindowSize: 10
+#        # nếu nhiều hơn 50% số request là fail (>5 requests)
+#        # circuit breaker sẽ chuyển sang OPEN, chặn mọi request
+#        failureRateThreshold: 50
+#        # giữ trạng thái OPEN trong khoảng 5s khi service gặp sự cố
+#        waitDurationInOpenState: 5s
+#        # cho phép thử nghiệm 5 request ở trạng thái HALF-OPEN
+#        permittedNumberOfCallInHalfOpenState: 5
+#        # tự động chuyển từ trạng thái OPEN sang HALF-OPEN
+#        automaticTransitionFromOpenToHalfOpenState: true
+#        # số lượng request ít nhất cần được gửi để circuit breaker có thể đánh giá lại
+#        minimum-number-of-calls: 3
+#  timelimiter:
+#    instances:
+#      storage:
+#        timeout-duration: 3s
+#  retry:
+#    instances:
+#      storage:
+#        max-attempts: 3
+#        wait-duration: 5s
+
+#redis:
+#  host: localhost
+#  port: 6379
