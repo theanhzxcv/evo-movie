@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/evo-movie-app.iml" filepath="$PROJECT_DIR$/.idea/evo-movie-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/evo-services/evo-identity/identity.iml" filepath="$PROJECT_DIR$/evo-services/evo-identity/identity.iml" />
     </modules>
   </component>
 </project>

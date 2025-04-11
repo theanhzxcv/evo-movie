@@ -6,7 +6,7 @@ import com.evo.identity.application.enums.EActive;
 import com.evo.identity.application.model.AuthenticationReqModel;
 import com.evo.identity.application.model.AuthenticationResModel;
 import com.evo.identity.application.model.RegistrationReqModel;
-import com.evo.identity.application.security.JwtUtil;
+import com.evo.identity.application.security.JwtUtils;
 import com.evo.identity.application.service.AuthenticationService;
 import com.evo.identity.domain.User;
 import com.evo.identity.domain.command.TokenInfoCmd;
@@ -29,7 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ApplicationAuthenticationServiceImpl implements AuthenticationService {
 
-    private final JwtUtil jwtUtil;
+    private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final UserEntityRepository userEntityRepository;
     private final UserDomainRepository userDomainRepository;
@@ -40,23 +40,19 @@ public class ApplicationAuthenticationServiceImpl implements AuthenticationServi
         User user = findUser(model.getUserName());
 
         if (Objects.equals(EActive.INACTIVE.value, user.getIsActive())) {
-            throw new AppException(ErrConstans.USER_ERROR_001);
+            throw new AppException(ErrConstans.AUTH_ERROR_001);
         }
 
         if (!passwordEncoder.matches(model.getUserPass(), user.getUserPass())) {
-            throw new AppException(ErrConstans.USER_ERROR_002);
+            throw new AppException(ErrConstans.AUTH_ERROR_002);
         }
 
-        AuthenticationResModel res = new AuthenticationResModel();
         try {
-            String accessToken = jwtUtil.generateAccessToken(user);
-            String refreshToken = jwtUtil.generateRefreshToken(user);
-            Long accessTokenExpireAt = jwtUtil.getExpirationTime(accessToken);
-            Long refreshTokenExpireAt = jwtUtil.getExpirationTime(refreshToken);
-            res.setAccessToken(accessToken);
-            res.setRefreshToken(refreshToken);
-            res.setAccessTokenExpireAt(accessTokenExpireAt);
-            res.setRefreshTokenExpireAt(refreshTokenExpireAt);
+            String accessToken = jwtUtils.generateAccessToken(user);
+            String refreshToken = jwtUtils.generateRefreshToken(user);
+            Long accessTokenExpireAt = jwtUtils.getExpirationTime(accessToken);
+            Long refreshTokenExpireAt = jwtUtils.getExpirationTime(refreshToken);
+
 
             TokenInfoCmd cmd = new TokenInfoCmd();
             cmd.setUserId(user.getId());
@@ -67,11 +63,17 @@ public class ApplicationAuthenticationServiceImpl implements AuthenticationServi
             user.saveTokenInfo(cmd);
 
             userDomainRepository.save(user);
+
+            AuthenticationResModel res = new AuthenticationResModel();
+            res.setAccessToken(accessToken);
+            res.setRefreshToken(refreshToken);
+            res.setAccessTokenExpireAt(accessTokenExpireAt);
+            res.setRefreshTokenExpireAt(refreshTokenExpireAt);
+
+            return res;
         } catch (Exception e) {
             throw new AppException(ErrConstans.SYSTEM_ERROR_001);
         }
-
-        return res;
     }
 
     @Override

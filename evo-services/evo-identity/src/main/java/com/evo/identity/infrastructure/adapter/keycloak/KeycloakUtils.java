@@ -3,7 +3,9 @@ package com.evo.identity.infrastructure.adapter.keycloak;
 import com.evo.constans.ErrConstans;
 import com.evo.exception.AppException;
 import com.evo.identity.application.model.AuthenticationReqModel;
+import com.evo.identity.domain.command.UserAuthenticationCmd;
 import com.evo.identity.domain.command.UserRegistrationCmd;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,22 +31,20 @@ public class KeycloakUtils {
     private final RestTemplate restTemplate;
     private final KeycloakProperties keycloakProperties;
 
-    public Map<String, Object> keycloakLogin(AuthenticationReqModel model) {
-        String loginUrl = keycloakProperties.getAuthServerUrl() +
-                "/realms/" + keycloakProperties.getRealm() +
-                "/protocol/openid-connect/token";
+    public Map<String, Object> loginWithKeycloak(UserAuthenticationCmd cmd) {
+        String loginUrl = KeycloakEndpoints.tokenEndpoint(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "password");
         body.add("client_id", keycloakProperties.getClientId());
         body.add("client_secret", keycloakProperties.getClientSecret());
-        body.add("username", model.getUserName());
-        body.add("password", model.getUserPass());
+        body.add("username", cmd.getUserName());
+        body.add("password", cmd.getUserPass());
 
         return sendLoginRequest(loginUrl, body);
     }
 
-//    public void createKeycloakUser(UserRegistrationCmd cmd) {
+//    public void createUserWithKeycloak(UserCreationCmd cmd) {
 //        String registerUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users";
 //        String adminToken = getAdminToken();
 //
@@ -59,8 +59,8 @@ public class KeycloakUtils {
 //        sendRegistrationRequest(registerUrl, adminToken, userPayload, HttpMethod.POST);
 //    }
 
-    public void createKeycloakUser(UserRegistrationCmd cmd) {
-        String registerUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users";
+    public void registrationWithKeycloak(UserRegistrationCmd cmd) {
+        String registerUrl = KeycloakEndpoints.userRegistration(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm());
         String adminToken = getAdminToken();
 
         Map<String, Object> userPayload = new HashMap<>();
