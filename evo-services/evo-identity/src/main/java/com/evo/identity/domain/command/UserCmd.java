@@ -5,18 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailCmd {
+public class UserCmd {
     private UUID id;
-    private UUID userId;
-    private String emailChange;
-    private String firstName;
-    private String lastName;
+    private String userName;
+    private String userPass;
+    private UserDetailCmd userDetailCmd;
+    private List<UserRoleCmd> userRoleCmds;
 }

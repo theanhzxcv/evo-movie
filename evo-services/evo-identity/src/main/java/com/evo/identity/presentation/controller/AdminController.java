@@ -18,6 +18,7 @@ import com.evo.response.Response;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class AdminController {
     private final RoleService roleService;
     private final PermissionService permissionService;
 
+    @PreAuthorize("hasPermission('Role', 'Create')")
     @PostMapping("/role")
     public Response<Object> createRole(@RequestBody @Valid RoleReqModel roleReqModel) {
         return Response.of(roleService.create(roleReqModel));
@@ -101,6 +103,7 @@ public class AdminController {
         return Response.of(permissionService.restore(id));
     }
 
+    @PreAuthorize("hasPermission('Permission', 'Read')")
     @GetMapping("/permission/search")
     public PageResponse<PermissionSearchResModel> searchPermissions(PermissionSearchReqModel model) {
         Page<PermissionSearchResModel> resModels = permissionService.search(model);

@@ -1,15 +1,18 @@
-package com.evo.constans;
+package com.evo.constants;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum ErrConstans {
+public enum ErrConstants {
     /* Server */
     SYSTEM_ERROR_001("SYSTEM_ERROR_001",
             "An unexpected error occurred on the server. Please try again later.",
             HttpStatus.INTERNAL_SERVER_ERROR),
+
+    ACCESS_DENIED_001("ACCESS_DENIED_001",
+            "Access denied. Please try again later.",
+            HttpStatus.FORBIDDEN),
 
     INPUT_ERROR_001("INPUT_ERROR_001",
             "Required field is missing or empty.",
@@ -107,7 +110,7 @@ public enum ErrConstans {
     private String errDesc;
     private HttpStatus status;
 
-    ErrConstans(String errCode, String errDesc, HttpStatus status) {
+    ErrConstants(String errCode, String errDesc, HttpStatus status) {
         this.errCode = errCode;
         this.errDesc = errDesc;
         this.status = status;
