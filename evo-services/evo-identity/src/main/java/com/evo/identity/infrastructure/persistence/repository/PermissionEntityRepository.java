@@ -12,5 +12,7 @@ import java.util.UUID;
 public interface PermissionEntityRepository extends JpaRepository<PermissionEntity, UUID> {
     Optional<PermissionEntity> findByNameAndIsActive(String name, Long isActive);
 
+    List<PermissionEntity> findAllByNameIsInAndIsActive(List<String> names, Long isActive);
+
     List<PermissionEntity> findAllByIdIsInAndIsActive(List<UUID> ids, Long isActive);
 }

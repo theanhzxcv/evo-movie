@@ -20,7 +20,7 @@ public class AuthenticationController {
     @PostMapping("/sign-in")
     public Response<AuthenticationResModel> signIn(@Valid @RequestBody AuthenticationReqModel model) {
         AuthenticationService authenticationService = authServiceFactory.getAuthService();
-        return Response.of(authenticationService.signIn(model)).success("Sign in successful. Welcome back.");
+        return Response.of(authenticationService.signIn(model));
     }
 
     @PostMapping("/sign-up")

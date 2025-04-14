@@ -73,7 +73,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         User principal = new User(username, "", grantedPermissions);
         AbstractAuthenticationToken auth =
-                new UserAuthentication(principal, token, grantedPermissions, isRoot, isClient);
+                new UserAuthentication(principal, token, grantedPermissions, isRoot, false);
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         logSecurityContextDetails();

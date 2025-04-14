@@ -16,7 +16,7 @@ server:
       max-request-size: 2GB
 
 keycloak:
-  enabled: false
+  enabled: true
   realm: EvoMovie
   auth-server-url: http://localhost:8080
   client:

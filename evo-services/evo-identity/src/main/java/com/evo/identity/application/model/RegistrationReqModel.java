@@ -28,4 +28,12 @@ public class RegistrationReqModel {
             message = "PASSWORD_ERROR_002"
     )
     private String userPass;
+
+    @NotBlank(message = "INPUT_ERROR_001")
+    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    private String firstName;
+
+    @NotBlank(message = "INPUT_ERROR_001")
+    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    private String lastName;
 }

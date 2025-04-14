@@ -1,6 +1,6 @@
 package com.evo.identity.domain.repository.impl;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.domain.Role;
 import com.evo.identity.domain.repository.RoleDomainRepository;
@@ -14,6 +14,7 @@ import com.evo.support.AbstractDomainRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class RoleDomainRepositoryImpl
 
     @Override
     public Role getById(UUID id) {
-        return this.findById(id).orElseThrow(() -> new AppException(ErrConstans.ROLE_DETAIL_ERROR_001));
+        return this.findById(id).orElseThrow(() -> new AppException(ErrConstants.ROLE_DETAIL_ERROR_001));
     }
 
     @Override

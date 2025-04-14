@@ -1,6 +1,6 @@
 package com.evo.identity.domain.repository.impl;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.domain.Permission;
 import com.evo.identity.domain.repository.PermissionDomainRepository;
@@ -36,13 +36,13 @@ public class PermissionDomainRepositoryImpl
 
     @Override
     public Permission getById(UUID id) {
-        return this.findById(id).orElseThrow(() -> new AppException(ErrConstans.PERMISSION_DETAIL_ERROR_001));
+        return this.findById(id).orElseThrow(() -> new AppException(ErrConstants.PERMISSION_DETAIL_ERROR_001));
     }
 
     @Override
     public void existsById(UUID id) {
         if (this.findById(id).isPresent()) {
-            throw new AppException(ErrConstans.PERMISSION_DETAIL_ERROR_002);
+            throw new AppException(ErrConstants.PERMISSION_DETAIL_ERROR_002);
         }
     }
 }
