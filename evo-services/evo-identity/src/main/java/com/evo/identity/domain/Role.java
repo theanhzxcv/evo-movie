@@ -33,7 +33,7 @@ public class Role extends AuditableDomain {
         this.description = cmd.getDescription();
         this.root = cmd.getRoot();
         this.isActive = EActive.ACTIVE.value;
-        this.isDefault = EDefault.NOT_DEFAULT.value;
+        this.isDefault = cmd.getIsDefault();
         this.type = cmd.getType();
         this.updateRolePermission(cmd.getRolePermissionCmds());
     }

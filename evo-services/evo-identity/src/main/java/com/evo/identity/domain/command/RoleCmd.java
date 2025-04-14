@@ -19,5 +19,7 @@ public class RoleCmd {
     private String description;
     private Long root;
     private String type;
+    private Long isActive;
+    private Long isDefault;
     private List<RolePermissionCmd> rolePermissionCmds;
 }

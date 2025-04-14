@@ -1,6 +1,6 @@
 package com.evo.identity.application.service.impl;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
 import com.evo.identity.application.model.PermissionReqModel;
@@ -40,7 +40,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Map<String, Long> create(PermissionReqModel model) {
         if (permissionEntityRepository.findByNameAndIsActive(model.getName(), EActive.ACTIVE.value).isPresent()) {
-            throw new AppException(ErrConstans.PERMISSION_DETAIL_ERROR_002);
+            throw new AppException(ErrConstants.PERMISSION_DETAIL_ERROR_002);
         }
 
         PermissionCmd cmd = EvoModelMapperUtils.toObject(model, PermissionCmd.class);
@@ -57,7 +57,7 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionResModel update(UUID id, PermissionReqModel model) {
         Permission permission = permissionDomainRepository.getById(id);
         if (Objects.equals(EActive.INACTIVE.value, permission.getIsActive())) {
-            throw new AppException(ErrConstans.PERMISSION_ERROR_001);
+            throw new AppException(ErrConstants.PERMISSION_ERROR_001);
         }
 
         PermissionCmd cmd = EvoModelMapperUtils.toObject(model, PermissionCmd.class);
@@ -71,7 +71,7 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionResModel delete(UUID id) {
         Permission permission = permissionDomainRepository.getById(id);
         if (Objects.equals(EActive.INACTIVE.value, permission.getIsActive())) {
-            throw new AppException(ErrConstans.PERMISSION_ERROR_001);
+            throw new AppException(ErrConstants.PERMISSION_ERROR_001);
         }
         permission.delete();
         permissionDomainRepository.save(permission);
@@ -83,7 +83,7 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionResModel restore(UUID id) {
         Permission permission = permissionDomainRepository.getById(id);
         if (Objects.equals(EActive.ACTIVE.value, permission.getIsActive())) {
-            throw new AppException(ErrConstans.PERMISSION_ERROR_002);
+            throw new AppException(ErrConstants.PERMISSION_ERROR_002);
         }
         permission.restore();
         permissionDomainRepository.save(permission);
@@ -111,7 +111,7 @@ public class PermissionServiceImpl implements PermissionService {
     public PermissionResModel details(UUID id) {
         Permission permission = permissionDomainRepository.getById(id);
         if (Objects.equals(EActive.INACTIVE.value, permission.getIsActive())) {
-            throw new AppException(ErrConstans.PERMISSION_ERROR_001);
+            throw new AppException(ErrConstants.PERMISSION_ERROR_001);
         }
 
         return EvoModelMapperUtils.toObject(permission, PermissionResModel.class);
