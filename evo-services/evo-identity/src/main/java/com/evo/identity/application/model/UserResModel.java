@@ -1,19 +1,21 @@
-package com.evo.identity.domain.command;
+package com.evo.identity.application.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRegistrationCmd {
+public class UserResModel {
     private UUID id;
     private String userName;
-    private String userPass;
-    private UserDetailCmd userDetailCmd;
+    private Long isActive;
+    private UserDetailResModel userDetail;
+    private List<UUID> roleIds;
 }

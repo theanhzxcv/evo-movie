@@ -1,16 +1,14 @@
 package com.evo.identity.infrastructure.adapter.keycloak;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
-import com.evo.identity.application.model.AuthenticationReqModel;
 import com.evo.identity.domain.command.UserAuthenticationCmd;
+import com.evo.identity.domain.command.UserDetailCmd;
 import com.evo.identity.domain.command.UserRegistrationCmd;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,11 +61,12 @@ public class KeycloakUtils {
         String registerUrl = KeycloakEndpoints.userRegistration(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm());
         String adminToken = getAdminToken();
 
+        UserDetailCmd userDetailCmd = cmd.getUserDetailCmd();
         Map<String, Object> userPayload = new HashMap<>();
         userPayload.put("username", cmd.getUserName());
-        userPayload.put("email", cmd.getUserEmail());
-        userPayload.put("firstName", cmd.getFirstName());
-        userPayload.put("lastName", cmd.getLastName());
+        userPayload.put("email", userDetailCmd.getEmailChange());
+        userPayload.put("firstName", userDetailCmd.getFirstName());
+        userPayload.put("lastName", userDetailCmd.getLastName());
         userPayload.put("enabled", true);
         userPayload.put("credentials", List.of(Map.of("type", "password", "value", cmd.getUserPass(), "temporary", false)));
 
@@ -155,9 +154,9 @@ public class KeycloakUtils {
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new AppException(ErrConstans.AUTH_ERROR_003);
+            throw new AppException(ErrConstants.AUTH_ERROR_003);
         } catch (Exception e) {
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 
@@ -169,10 +168,10 @@ public class KeycloakUtils {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, method, new HttpEntity<>(payload, headers), String.class);
             if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new AppException(ErrConstans.AUTH_ERROR_004);
+                throw new AppException(ErrConstants.AUTH_ERROR_004);
             }
         } catch (HttpClientErrorException e) {
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 

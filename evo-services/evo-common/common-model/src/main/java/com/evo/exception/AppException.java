@@ -1,6 +1,6 @@
 package com.evo.exception;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +11,9 @@ public class AppException extends RuntimeException {
     protected String errCode;
     protected String errDesc;
 
-    public AppException(ErrConstans errConstans) {
-        this.status = errConstans.getStatus().value();
-        this.errCode = errConstans.getErrCode();
-        this.errDesc = errConstans.getErrDesc();
+    public AppException(ErrConstants errConstants) {
+        this.status = errConstants.getStatus().value();
+        this.errCode = errConstants.getErrCode();
+        this.errDesc = errConstants.getErrDesc();
     }
 }

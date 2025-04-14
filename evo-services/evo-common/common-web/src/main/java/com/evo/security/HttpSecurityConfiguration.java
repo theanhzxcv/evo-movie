@@ -1,11 +1,15 @@
 package com.evo.security;
 
+import com.evo.configuration.CustomPermissionEvaluator;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,13 +21,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 //@EnableFeignClients(basePackages = {"com.evo.client"})
-//@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class HttpSecurityConfiguration {
 //    private final ActionLogFilter actionLogFilter;
     private final ForbiddenTokenFilter forbiddenTokenFilter;
     private final CustomAuthenticationFilter customAuthenticationFilter;
-//    private final CustomPermissionEvaluator customPermissionEvaluator;
+    private final CustomPermissionEvaluator customPermissionEvaluator;
     private final JwtProperties jwtProperties;
 
 
@@ -56,12 +60,12 @@ public class HttpSecurityConfiguration {
         return http.build();
     }
 
-//    @Bean
-//    public MethodSecurityExpressionHandler expressionHandler() {
-//        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
-//        expressionHandler.setPermissionEvaluator(customPermissionEvaluator);
-//        return expressionHandler;
-//    }
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(customPermissionEvaluator);
+        return expressionHandler;
+    }
 
     public AuthenticationManagerResolver<HttpServletRequest> jwkResolver(JwtProperties jwtProperties) {
         return new JwkAuthManagerResolver(jwtProperties);

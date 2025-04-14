@@ -1,6 +1,7 @@
 package com.evo.identity.domain;
 
 import com.evo.configuration.AuditableDomain;
+import com.evo.identity.application.enums.EVerify;
 import com.evo.identity.domain.command.UserDetailCmd;
 import com.evo.util.EvoIdUtils;
 import lombok.AccessLevel;
@@ -31,14 +32,22 @@ public class UserDetail extends AuditableDomain {
     public UserDetail(UserDetailCmd cmd) {
         this.id = EvoIdUtils.nextId();
         this.userId = cmd.getUserId();
+        this.firstName = cmd.getFirstName();
+        this.lastName = cmd.getLastName();
+        this.emailChange = cmd.getEmailChange();
+        this.isVerified = EVerify.UNVERIFIED.value;
+    }
+
+    public void update(UserDetailCmd cmd) {
+        this.firstName = cmd.getFirstName();
+        this.lastName = cmd.getLastName();
         this.emailChange = cmd.getEmailChange();
     }
 
-    private void update() {
-
-    }
-
-    private void verify() {
-
+    public void verify() {
+        this.email = this.emailChange;
+        this.emailChange = null;
+        this.linkVerify = null;
+        this.linkExpireTime = null;
     }
 }

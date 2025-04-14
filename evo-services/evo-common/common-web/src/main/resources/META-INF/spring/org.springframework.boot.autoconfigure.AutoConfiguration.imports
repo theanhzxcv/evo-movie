@@ -1,5 +1,6 @@
 com.evo.configuration.AuditorAwareImpl
 com.evo.configuration.JpaAuditingConfig
+com.evo.configuration.CustomPermissionEvaluator
 com.evo.security.JwtProperties
 com.evo.security.HttpSecurityConfiguration
 com.evo.security.JwkAuthManagerResolver

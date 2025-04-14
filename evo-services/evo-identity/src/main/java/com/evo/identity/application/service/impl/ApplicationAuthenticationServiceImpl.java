@@ -1,6 +1,6 @@
 package com.evo.identity.application.service.impl;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
 import com.evo.identity.application.model.AuthenticationReqModel;
@@ -40,11 +40,11 @@ public class ApplicationAuthenticationServiceImpl implements AuthenticationServi
         User user = findUser(model.getUserName());
 
         if (Objects.equals(EActive.INACTIVE.value, user.getIsActive())) {
-            throw new AppException(ErrConstans.AUTH_ERROR_001);
+            throw new AppException(ErrConstants.AUTH_ERROR_001);
         }
 
         if (!passwordEncoder.matches(model.getUserPass(), user.getUserPass())) {
-            throw new AppException(ErrConstans.AUTH_ERROR_002);
+            throw new AppException(ErrConstants.AUTH_ERROR_002);
         }
 
         try {
@@ -72,41 +72,40 @@ public class ApplicationAuthenticationServiceImpl implements AuthenticationServi
 
             return res;
         } catch (Exception e) {
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 
     @Override
     public Map<String, Long> signUp(RegistrationReqModel model) {
         if (userEntityRepository.findByUserNameAndIsActive(model.getUserName(), EActive.ACTIVE.value).isPresent()) {
-            throw new AppException(ErrConstans.USER_DETAIL_ERROR_002);
+            throw new AppException(ErrConstants.USER_DETAIL_ERROR_002);
         }
 
         if (userDetailEntityRepository.findByEmail(model.getUserEmail()).isPresent()) {
-            throw new AppException(ErrConstans.USER_DETAIL_ERROR_003);
+            throw new AppException(ErrConstants.USER_DETAIL_ERROR_003);
         }
 
         try {
-            UserRegistrationCmd cmd = EvoModelMapperUtils.toObject(model, UserRegistrationCmd.class);
-            cmd.setUserPass(passwordEncoder.encode(model.getUserPass()));
-
-            User user = new User(cmd);
+            UserRegistrationCmd registrationCmd = EvoModelMapperUtils.toObject(model, UserRegistrationCmd.class);
+            registrationCmd.setUserPass(passwordEncoder.encode(model.getUserPass()));
+            UserDetailCmd userDetailCmd = new UserDetailCmd();
+            userDetailCmd.setFirstName(model.getFirstName());
+            userDetailCmd.setLastName(model.getLastName());
+            userDetailCmd.setEmailChange(model.getUserEmail());
+            registrationCmd.setUserDetailCmd(userDetailCmd);
+            User user = new User(registrationCmd);
 
             /**
              * Assign role
              */
-
-            UserDetailCmd userDetailCmd = new UserDetailCmd();
-            userDetailCmd.setUserId(user.getId());
-            userDetailCmd.setEmailChange(cmd.getUserEmail());
-            user.saveUserDetail(userDetailCmd);
             userDomainRepository.save(user);
 
             Map<String, Long> res = new HashMap<>();
-            res.put("Result", 1L);
+            res.put("status", 1L);
             return res;
         } catch (Exception e){
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 
@@ -117,7 +116,7 @@ public class ApplicationAuthenticationServiceImpl implements AuthenticationServi
 
     private User findUser(String userName) {
         UserEntity userEntity = userEntityRepository.findByUserNameAndIsActive(userName, EActive.ACTIVE.value)
-                .orElseThrow(() -> new AppException(ErrConstans.USER_DETAIL_ERROR_001));
+                .orElseThrow(() -> new AppException(ErrConstants.USER_DETAIL_ERROR_001));
 
         return EvoModelMapperUtils.toObject(userEntity, User.class);
     }

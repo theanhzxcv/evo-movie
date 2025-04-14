@@ -10,14 +10,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserAuthentication extends UsernamePasswordAuthenticationToken {
-    private final boolean isRoot;
+    private final Long isRoot;
     private final boolean isClient;
     private final Set<String> grantedPermissions;
 
     public UserAuthentication(Object principal,
                               Object credentials,
                               Collection<? extends GrantedAuthority> authorities,
-                              boolean isRoot,
+                              Long isRoot,
                               boolean isClient) {
         super(principal, credentials, authorities);
         this.isRoot = isRoot;
@@ -29,7 +29,7 @@ public class UserAuthentication extends UsernamePasswordAuthenticationToken {
                 .collect(Collectors.toSet());
     }
 
-    public boolean isRoot() {
+    public Long isRoot() {
         return isRoot;
     }
 

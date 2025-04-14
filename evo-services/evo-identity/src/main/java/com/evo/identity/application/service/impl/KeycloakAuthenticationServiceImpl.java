@@ -1,8 +1,9 @@
 package com.evo.identity.application.service.impl;
 
-import com.evo.constans.ErrConstans;
+import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
+import com.evo.identity.application.enums.ETokenExpiration;
 import com.evo.identity.application.model.AuthenticationReqModel;
 import com.evo.identity.application.model.AuthenticationResModel;
 import com.evo.identity.application.model.RegistrationReqModel;
@@ -43,11 +44,11 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
         User user = findUser(model.getUserName());
 
         if (Objects.equals(EActive.INACTIVE.value, user.getIsActive())) {
-            throw new AppException(ErrConstans.AUTH_ERROR_001);
+            throw new AppException(ErrConstants.AUTH_ERROR_001);
         }
 
         if (!passwordEncoder.matches(model.getUserPass(), user.getUserPass())) {
-            throw new AppException(ErrConstans.AUTH_ERROR_002);
+            throw new AppException(ErrConstants.AUTH_ERROR_002);
         }
 
         try {
@@ -56,15 +57,14 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
             String accessToken = claims.get("access_token").toString();
             String refreshToken = claims.get("refresh_token").toString();
             Long accessTokenExpireAt = jwtUtils.getKeycloakJwtExpiration(accessToken);
-//            Long refreshTokenExpireAt = jwtUtils.getKeycloakJwtExpiration(refreshToken);
 
-//            TokenInfoCmd cmd = new TokenInfoCmd();
-//            cmd.setUserId(user.getId());
-//            cmd.setAccessToken(accessToken);
-//            cmd.setRefreshToken(refreshToken);
-//            cmd.setAccessTokenExpireAt(accessTokenExpireAt);
-//            cmd.setRefreshTokenExpireAt(refreshTokenExpireAt);
-//            user.saveTokenInfo(cmd);
+            TokenInfoCmd tokenInfoCmd = new TokenInfoCmd();
+            tokenInfoCmd.setUserId(user.getId());
+            tokenInfoCmd.setAccessToken(accessToken);
+            tokenInfoCmd.setRefreshToken(refreshToken);
+            tokenInfoCmd.setAccessTokenExpireAt(accessTokenExpireAt);
+            tokenInfoCmd.setRefreshTokenExpireAt(ETokenExpiration.REFRESH_TOKEN.value);
+            user.saveTokenInfo(tokenInfoCmd);
 
             userDomainRepository.save(user);
 
@@ -72,45 +72,44 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
             res.setAccessToken(accessToken);
             res.setRefreshToken(refreshToken);
             res.setAccessTokenExpireAt(accessTokenExpireAt);
-//            res.setRefreshTokenExpireAt(refreshTokenExpireAt);
+            res.setRefreshTokenExpireAt(ETokenExpiration.REFRESH_TOKEN.value);
 
             return res;
         } catch (Exception e) {
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 
     @Override
     public Map<String, Long> signUp(RegistrationReqModel model) {
         if (userEntityRepository.findByUserNameAndIsActive(model.getUserName(), EActive.ACTIVE.value).isPresent()) {
-            throw new AppException(ErrConstans.USER_DETAIL_ERROR_002);
+            throw new AppException(ErrConstants.USER_DETAIL_ERROR_002);
         }
 
         if (userDetailEntityRepository.findByEmail(model.getUserEmail()).isPresent()) {
-            throw new AppException(ErrConstans.USER_DETAIL_ERROR_003);
+            throw new AppException(ErrConstants.USER_DETAIL_ERROR_003);
         }
 
         try {
-            UserRegistrationCmd cmd = EvoModelMapperUtils.toObject(model, UserRegistrationCmd.class);
-            keycloakUtils.registrationWithKeycloak(cmd);
-            cmd.setUserPass(passwordEncoder.encode(model.getUserPass()));
-            User user = new User(cmd);
+            UserRegistrationCmd registrationCmd = EvoModelMapperUtils.toObject(model, UserRegistrationCmd.class);
+            UserDetailCmd userDetailCmd = new UserDetailCmd();
+            userDetailCmd.setFirstName(model.getFirstName());
+            userDetailCmd.setLastName(model.getLastName());
+            userDetailCmd.setEmailChange(model.getUserEmail());
+            registrationCmd.setUserDetailCmd(userDetailCmd);
+            registrationCmd.setUserPass(passwordEncoder.encode(model.getUserPass()));
+            User user = new User(registrationCmd);
 
             /**
              * Assign role
              */
-
-            UserDetailCmd userDetailCmd = new UserDetailCmd();
-            userDetailCmd.setUserId(user.getId());
-            userDetailCmd.setEmailChange(cmd.getUserEmail());
-            user.saveUserDetail(userDetailCmd);
             userDomainRepository.save(user);
 
             Map<String, Long> res = new HashMap<>();
             res.put("Result", 1L);
             return res;
         } catch (Exception e){
-            throw new AppException(ErrConstans.SYSTEM_ERROR_001);
+            throw new AppException(ErrConstants.SYSTEM_ERROR_001);
         }
     }
 
@@ -121,7 +120,7 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
 
     private User findUser(String userName) {
         UserEntity userEntity = userEntityRepository.findByUserNameAndIsActive(userName, EActive.ACTIVE.value)
-                .orElseThrow(() -> new AppException(ErrConstans.USER_DETAIL_ERROR_001));
+                .orElseThrow(() -> new AppException(ErrConstants.USER_DETAIL_ERROR_001));
 
         return EvoModelMapperUtils.toObject(userEntity, User.class);
     }

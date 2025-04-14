@@ -60,7 +60,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
         Set<SimpleGrantedAuthority> grantedPermissions = new HashSet<>();
         Optional<UserAuthority> optionalUserAuthority = enrichAuthority(token);
-        boolean isRoot = optionalUserAuthority.map(UserAuthority::getIsRoot).orElse(false);
+        Long isRoot = optionalUserAuthority.map(UserAuthority::getIsRoot).orElse(0L);
 
         optionalUserAuthority.ifPresent(userAuthority ->
                 userAuthority.getGrantedPermissions().forEach(permission ->
