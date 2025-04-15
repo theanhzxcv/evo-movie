@@ -68,7 +68,7 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                         grantedPermissions.add(new SimpleGrantedAuthority(permission))));
 
         String username = StringUtils.hasText(token.getClaimAsString("email"))
-                ? token.getClaimAsString("email")
+                ? token.getClaimAsString("preferred_username")
                 : token.getClaimAsString("sub");
 
 
