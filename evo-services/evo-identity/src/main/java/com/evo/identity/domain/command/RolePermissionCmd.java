@@ -15,4 +15,5 @@ public class RolePermissionCmd {
     private UUID id;
     private UUID roleId;
     private UUID permissionId;
+    private Long isActive;
 }

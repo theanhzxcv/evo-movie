@@ -15,4 +15,5 @@ public class UserRoleCmd {
     private UUID id;
     private UUID userId;
     private UUID roleId;
+    private Long isActive;
 }

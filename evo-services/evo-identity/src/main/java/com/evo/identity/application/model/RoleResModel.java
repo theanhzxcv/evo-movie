@@ -17,7 +17,7 @@ public class RoleResModel {
     private UUID id;
     private String name;
     private String description;
-    private Long root;
+    private Long isRoot;
     private String type;
     private Long isActive;
     private List<UUID> permissionIds;

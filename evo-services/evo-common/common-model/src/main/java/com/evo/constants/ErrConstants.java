@@ -19,7 +19,7 @@ public enum ErrConstants {
             HttpStatus.BAD_REQUEST),
 
     INPUT_ERROR_002("INPUT_ERROR_002",
-            "This field must be between 4 and 255 characters.",
+            "This field must be between 1 and 255 characters.",
             HttpStatus.BAD_REQUEST),
 
     EMAIL_ERROR_001("EMAIL_ERROR_001",
@@ -53,6 +53,14 @@ public enum ErrConstants {
 
 
     /* User */
+    USER_ERROR_001("USER_ERROR_001",
+            "This user is already been deleted.",
+            HttpStatus.BAD_REQUEST),
+
+    USER_ERROR_002("USER_ERROR_002",
+            "This user is currently available and does not need restoration.",
+            HttpStatus.BAD_REQUEST),
+
     USER_DETAIL_ERROR_001("USER_DETAIL_ERROR_001",
             "No account found with the provided username. Please check your credentials and try again.",
             HttpStatus.NOT_FOUND),
@@ -67,11 +75,11 @@ public enum ErrConstants {
 
     /* Role */
     ROLE_ERROR_001("ROLE_ERROR_001",
-            "The role has already been deleted.",
+            "This role has already been deleted.",
             HttpStatus.BAD_REQUEST),
 
     ROLE_ERROR_002("ROLE_ERROR_002",
-            "The role is currently available and does not need restoration",
+            "This role is currently available and does not need restoration",
             HttpStatus.BAD_REQUEST),
 
     ROLE_DETAIL_ERROR_001("ROLE_DETAIL_ERROR_001",
@@ -88,11 +96,11 @@ public enum ErrConstants {
 
     /* Permission */
     PERMISSION_ERROR_001("PERMISSION_ERROR_001",
-            "The permission has already been deleted.",
+            "This permission has already been deleted.",
             HttpStatus.BAD_REQUEST),
 
     PERMISSION_ERROR_002("PERMISSION_ERROR_002",
-            "The permission is currently available and does not need restoration.",
+            "This permission is currently available and does not need restoration.",
             HttpStatus.BAD_REQUEST),
 
     PERMISSION_DETAIL_ERROR_001("PERMISSION_DETAIL_ERROR_001",

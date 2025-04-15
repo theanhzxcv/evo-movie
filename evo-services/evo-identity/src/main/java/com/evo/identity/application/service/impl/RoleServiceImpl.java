@@ -3,6 +3,7 @@ package com.evo.identity.application.service.impl;
 import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
+import com.evo.identity.application.enums.EDefault;
 import com.evo.identity.application.model.AssignPermissionResModel;
 import com.evo.identity.application.model.RoleDeleteReqModel;
 import com.evo.identity.application.model.RoleDetailResModel;
@@ -13,11 +14,14 @@ import com.evo.identity.application.model.RoleSearchResModel;
 import com.evo.identity.application.service.RoleService;
 import com.evo.identity.domain.Role;
 import com.evo.identity.domain.RolePermission;
+import com.evo.identity.domain.UserRole;
 import com.evo.identity.domain.command.RoleCmd;
 import com.evo.identity.domain.command.RolePermissionCmd;
+import com.evo.identity.domain.command.UserRoleCmd;
 import com.evo.identity.domain.query.RoleQuery;
 import com.evo.identity.domain.repository.RoleDomainRepository;
 import com.evo.identity.infrastructure.persistence.entities.RoleEntity;
+import com.evo.identity.infrastructure.persistence.entities.UserEntity;
 import com.evo.identity.infrastructure.persistence.mapper.RoleEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.RolePermissionEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserEntityMapperImpl;
@@ -64,6 +68,7 @@ public class RoleServiceImpl implements RoleService {
         }
 
         RoleCmd roleCmd = EvoModelMapperUtils.toObject(model, RoleCmd.class);
+        roleCmd.setIsDefault(EDefault.NOT_DEFAULT.value);
         roleCmd.setRolePermissionCmds(buildRolePermissionCmds(model.getPermissionIds()));
         Role role = new Role(roleCmd);
         roleDomainRepository.save(role);
@@ -97,31 +102,33 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleResModel delete(RoleDeleteReqModel model) {
-        Role role = findRole(model.getCurrentId());
+        Role role = findRole(model.getCurrentRoleId());
         if (Objects.equals(EActive.INACTIVE.value, role.getIsActive())) {
             throw new AppException(ErrConstants.ROLE_ERROR_001);
         }
-//        Long assignedUserCount = userEntityRepositoryCustom.countUsersByRoleId(role.getId());
-//        if (assignedUserCount > 0) {
-//            Role newRole = findRole(model.getNewId());
-//            if (Objects.equals(EActive.INACTIVE.value, newRole.getIsActive())) {
-//                throw new AppException(ErrConstans.ROLE_ERROR_001);
-//            }
-//
-//            if (Objects.equals(newRole.getId(), model.getCurrentId())) {
-//                throw new AppException(ErrConstans.CHANGE_ROLE_ERROR_001);
-//            }
-//
-//            List<UserEntity> userEntities = userEntityRepositoryCustom.searchUsersByRoleId(role.getId());
-//            List<UserRole> userRoles = userRoleEntityRepository.findByUserIdIn(userEntities.stream()
-//                    .map(UserEntity::getId).toList()).stream()
-//                    .map(userRoleEntityMapper::toDomain)
-//                    .toList();
-//            for (UserRole userRole : userRoles) {
-//                userRole
-//            }
-//
-//        }
+
+        Long assignedUserCount = userEntityRepositoryCustom.countUsersByRoleId(role.getId());
+        if (assignedUserCount > 0) {
+            Role newRole = findRole(model.getNewRoleId());
+            if (Objects.equals(EActive.INACTIVE.value, newRole.getIsActive())) {
+                throw new AppException(ErrConstants.ROLE_ERROR_001);
+            }
+
+            if (Objects.equals(newRole.getId(), model.getCurrentRoleId())) {
+                throw new AppException(ErrConstants.CHANGE_ROLE_ERROR_001);
+            }
+
+            List<UserEntity> userEntities = userEntityRepositoryCustom.searchUsersByRoleId(role.getId());
+            List<UserRole> userRoles = userRoleEntityRepository.findByUserIdIn(userEntities.stream()
+                    .map(UserEntity::getId).toList()).stream()
+                    .map(userRoleEntityMapper::toDomain)
+                    .toList();
+            UserRoleCmd userRoleCmd = new UserRoleCmd();
+            for (UserRole userRole : userRoles) {
+                userRoleCmd.setRoleId(newRole.getId());
+            }
+
+        }
         role.delete();
         roleDomainRepository.save(role);
 

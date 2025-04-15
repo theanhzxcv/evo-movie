@@ -1,0 +1,226 @@
+CREATE TABLE PERMISSION (
+    ID          UUID NOT NULL PRIMARY KEY,
+    NAME        VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(255),
+    RESOURCE    VARCHAR(255) NOT NULL,
+    SCOPE       VARCHAR(255) NOT NULL,
+    IS_ACTIVE   BIGINT NOT NULL DEFAULT 0,
+    CREATED_BY  VARCHAR(255) NOT NULL,
+    CREATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY  VARCHAR(255) NOT NULL,
+    UPDATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE ROLE (
+    ID          UUID NOT NULL PRIMARY KEY,
+    NAME        VARCHAR(255) NOT NULL,
+    DESCRIPTION VARCHAR(255),
+    IS_ROOT     BIGINT NOT NULL DEFAULT 0,
+    IS_ACTIVE   BIGINT NOT NULL DEFAULT 0,
+    IS_DEFAULT  BIGINT NOT NULL DEFAULT 0,
+    TYPE        VARCHAR(255) NOT NULL,
+    CREATED_BY  VARCHAR(255) NOT NULL,
+    CREATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY  VARCHAR(255) NOT NULL,
+    UPDATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE ROLE_PERMISSION (
+    ID            UUID NOT NULL PRIMARY KEY,
+    ROLE_ID       UUID NOT NULL,
+    PERMISSION_ID UUID NOT NULL,
+    IS_ACTIVE     BIGINT NOT NULL DEFAULT 0,
+    CREATED_BY    VARCHAR(255) NOT NULL,
+    CREATED_AT    TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY    VARCHAR(255) NOT NULL,
+    UPDATED_AT    TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE TOKEN_INFO (
+    ID                      UUID NOT NULL PRIMARY KEY,
+    USER_ID                 UUID NOT NULL,
+    ACCESS_TOKEN            TEXT NOT NULL,
+    ACCESS_TOKEN_EXPIRE_AT  BIGINT NOT NULL,
+    REFRESH_TOKEN           TEXT NOT NULL,
+    REFRESH_TOKEN_EXPIRE_AT BIGINT NOT NULL,
+    TYPE                    VARCHAR(255) NOT NULL,
+    CREATED_BY              VARCHAR(255) NOT NULL,
+    CREATED_AT              TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY              VARCHAR(255) NOT NULL,
+    UPDATED_AT              TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE USER_ACTIVITY (
+    ID          UUID NOT NULL PRIMARY KEY,
+    USER_NAME   VARCHAR(255) NOT NULL,
+    ACTIVITY    VARCHAR(255) NOT NULL,
+    LOCK_UNTIL  TIMESTAMP(6) WITH TIME ZONE,
+    LOG_AT      TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    RETRY_COUNT BIGINT NOT NULL DEFAULT 0,
+    CREATED_BY  VARCHAR(255) NOT NULL,
+    CREATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY  VARCHAR(255) NOT NULL,
+    UPDATED_AT  TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE USER_DETAIL (
+    ID               UUID NOT NULL PRIMARY KEY,
+    USER_ID          UUID NOT NULL,
+    AVATAR_ID        UUID,
+    FIRST_NAME       VARCHAR(255) NOT NULL,
+    LAST_NAME        VARCHAR(255) NOT NULL,
+    EMAIL_VERIFIED   VARCHAR(255),
+    EMAIL            VARCHAR(255) NOT NULL,
+    IS_VERIFIED      BIGINT NOT NULL DEFAULT 0,
+    LINK_VERIFY      VARCHAR(255),
+    LINK_EXPIRE_TIME TIMESTAMP(6) WITH TIME ZONE,
+    CREATED_BY       VARCHAR(255) NOT NULL,
+    CREATED_AT       TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY       VARCHAR(255) NOT NULL,
+    UPDATED_AT       TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE USER_ROLE (
+    ID         UUID NOT NULL PRIMARY KEY,
+    USER_ID    UUID NOT NULL,
+    ROLE_ID    UUID NOT NULL,
+    IS_ACTIVE  BIGINT NOT NULL DEFAULT 0,
+    CREATED_BY VARCHAR(255) NOT NULL,
+    CREATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY VARCHAR(255) NOT NULL,
+    UPDATED_AT TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+CREATE TABLE USERS (
+    ID             UUID NOT NULL PRIMARY KEY,
+    USER_NAME      VARCHAR(255) NOT NULL,
+    USER_PASS      VARCHAR(255) NOT NULL,
+    IS_ACTIVE      BIGINT NOT NULL DEFAULT 0,
+    IS_TFA_ENABLED BIGINT DEFAULT 0,
+    SECRET_KEY     VARCHAR(255),
+    CREATED_BY     VARCHAR(255) NOT NULL,
+    CREATED_AT     TIMESTAMP(6) WITH TIME ZONE NOT NULL,
+    UPDATED_BY     VARCHAR(255) NOT NULL,
+    UPDATED_AT     TIMESTAMP(6) WITH TIME ZONE NOT NULL
+);
+
+/*********************************************************************************
+*********************************************************************************/
+
+ALTER TABLE PERMISSION
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN PERMISSION.ID IS 'Unique identifier for the permission';
+COMMENT ON COLUMN PERMISSION.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN PERMISSION.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN PERMISSION.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN PERMISSION.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN PERMISSION.DESCRIPTION IS 'Description of the permission';
+COMMENT ON COLUMN PERMISSION.IS_ACTIVE IS 'Flag indicating if the permission is active (1 = active, 0 = inactive)';
+COMMENT ON COLUMN PERMISSION.NAME IS 'Name of the permission';
+COMMENT ON COLUMN PERMISSION.RESOURCE IS 'The resource associated with the permission';
+COMMENT ON COLUMN PERMISSION.SCOPE IS 'The scope or area where the permission applies';
+
+ALTER TABLE ROLE
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN ROLE.ID IS 'Unique identifier for the role';
+COMMENT ON COLUMN ROLE.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN ROLE.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN ROLE.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN ROLE.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN ROLE.DESCRIPTION IS 'Description of the role';
+COMMENT ON COLUMN ROLE.IS_ACTIVE IS 'Flag indicating if the role is active';
+COMMENT ON COLUMN ROLE.IS_DEFAULT IS 'Flag indicating if the role is the default role';
+COMMENT ON COLUMN ROLE.NAME IS 'Name of the role';
+COMMENT ON COLUMN ROLE.is_root IS 'Flag indicating if the role has root (admin) privileges';
+COMMENT ON COLUMN ROLE.TYPE IS 'Type of the role (e.g., regular, admin)';
+
+ALTER TABLE ROLE_PERMISSION
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN ROLE_PERMISSION.ID IS 'Unique identifier for the role permission record';
+COMMENT ON COLUMN ROLE_PERMISSION.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN ROLE_PERMISSION.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN ROLE_PERMISSION.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN ROLE_PERMISSION.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN ROLE_PERMISSION.IS_ACTIVE IS 'Flag indicating if the role permission is active';
+COMMENT ON COLUMN ROLE_PERMISSION.PERMISSION_ID IS 'Foreign key referencing the permission';
+COMMENT ON COLUMN ROLE_PERMISSION.ROLE_ID IS 'Foreign key referencing the role';
+
+ALTER TABLE TOKEN_INFO
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN TOKEN_INFO.ID IS 'Unique identifier for the token record';
+COMMENT ON COLUMN TOKEN_INFO.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN TOKEN_INFO.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN TOKEN_INFO.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN TOKEN_INFO.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN TOKEN_INFO.ACCESS_TOKEN IS 'Access token used for authentication';
+COMMENT ON COLUMN TOKEN_INFO.ACCESS_TOKEN_EXPIRE_AT IS 'Expiration time of the access token (epoch time)';
+COMMENT ON COLUMN TOKEN_INFO.REFRESH_TOKEN IS 'Refresh token used to obtain a new access token';
+COMMENT ON COLUMN TOKEN_INFO.REFRESH_TOKEN_EXPIRE_AT IS 'Expiration time of the refresh token (epoch time)';
+COMMENT ON COLUMN TOKEN_INFO.TYPE IS 'Type of the token (e.g., OAuth2, JWT)';
+COMMENT ON COLUMN TOKEN_INFO.USER_ID IS 'Foreign key referencing the user associated with the tokens';
+
+ALTER TABLE USER_ACTIVITY
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN USER_ACTIVITY.ID IS 'Unique identifier for the activity record';
+COMMENT ON COLUMN USER_ACTIVITY.ACTIVITY IS 'Description of the user activity';
+COMMENT ON COLUMN USER_ACTIVITY.LOCK_UNTIL IS 'Timestamp until the activity is locked';
+COMMENT ON COLUMN USER_ACTIVITY.LOG_AT IS 'Timestamp when the activity occurred';
+COMMENT ON COLUMN USER_ACTIVITY.RETRY_COUNT IS 'Number of retries for the activity';
+COMMENT ON COLUMN USER_ACTIVITY.USER_NAME IS 'User name associated with the activity';
+
+ALTER TABLE USER_DETAIL
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN USER_DETAIL.ID IS 'Unique identifier for the user detail record';
+COMMENT ON COLUMN USER_DETAIL.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN USER_DETAIL.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN USER_DETAIL.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN USER_DETAIL.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN USER_DETAIL.AVATAR_ID IS 'Foreign key referencing the avatar image for the user';
+COMMENT ON COLUMN USER_DETAIL.email_verified IS 'User email address';
+COMMENT ON COLUMN USER_DETAIL.EMAIL IS 'New email address (if the user is changing email)';
+COMMENT ON COLUMN USER_DETAIL.FIRST_NAME IS 'User first name';
+COMMENT ON COLUMN USER_DETAIL.IS_VERIFIED IS 'Flag indicating if the user is verified';
+COMMENT ON COLUMN USER_DETAIL.LAST_NAME IS 'User last name';
+COMMENT ON COLUMN USER_DETAIL.LINK_EXPIRE_TIME IS 'Expiration time for the email verification link';
+COMMENT ON COLUMN USER_DETAIL.LINK_VERIFY IS 'Verification link for email change';
+COMMENT ON COLUMN USER_DETAIL.USER_ID IS 'Foreign key referencing the user';
+
+ALTER TABLE USER_ROLE
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN USER_ROLE.ID IS 'Unique identifier for the user role record';
+COMMENT ON COLUMN USER_ROLE.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN USER_ROLE.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN USER_ROLE.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN USER_ROLE.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN USER_ROLE.IS_ACTIVE IS 'Flag indicating if the user role is active';
+COMMENT ON COLUMN USER_ROLE.ROLE_ID IS 'Foreign key referencing the role';
+COMMENT ON COLUMN USER_ROLE.USER_ID IS 'Foreign key referencing the user';
+
+ALTER TABLE USERS
+    OWNER TO POSTGRES;
+
+-- Adding comments for columns
+COMMENT ON COLUMN USERS.ID IS 'Unique identifier for the user';
+COMMENT ON COLUMN USERS.CREATED_AT IS 'Record creation timestamp';
+COMMENT ON COLUMN USERS.CREATED_BY IS 'User who created the record';
+COMMENT ON COLUMN USERS.UPDATED_AT IS 'Record last update timestamp';
+COMMENT ON COLUMN USERS.UPDATED_BY IS 'User who last updated the record';
+COMMENT ON COLUMN USERS.IS_ACTIVE IS 'Flag indicating if the user is active';
+COMMENT ON COLUMN USERS.IS_TFA_ENABLED IS 'Flag indicating if two-factor authentication is enabled';
+COMMENT ON COLUMN USERS.SECRET_KEY IS 'Secret key used for authentication';
+COMMENT ON COLUMN USERS.USER_NAME IS 'Username';
+COMMENT ON COLUMN USERS.USER_PASS IS 'User\'s password';
