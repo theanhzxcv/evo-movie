@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -106,11 +107,11 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private Optional<UserAuthority> enrichAuthority(Jwt token) {
         String username = StringUtils.hasText(token.getClaimAsString("email"))
-                ? token.getClaimAsString("email")
+                ? token.getClaimAsString("preferred_username")
                 : token.getClaimAsString("sub");
 
         if (!StringUtils.hasText(username)) {
-            log.warn("JWT token does not contain 'email' or 'sub' claim");
+            log.error("JWT token does not contain 'email' or 'sub' claim");
             return Optional.empty();
         }
 
