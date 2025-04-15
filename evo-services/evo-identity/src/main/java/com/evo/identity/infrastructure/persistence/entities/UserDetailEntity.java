@@ -39,11 +39,11 @@ public class UserDetailEntity extends AuditableEntity {
     @Column(name = "LAST_NAME")
     private String lastName;
 
+    @Column(name = "EMAIL_VERIFIED")
+    private String emailVerified;
+
     @Column(name = "EMAIL")
     private String email;
-
-    @Column(name = "EMAIL_CHANGE")
-    private String emailChange;
 
     @Column(name = "LINK_VERIFY")
     private String linkVerify;

@@ -31,6 +31,15 @@ public class User extends AuditableDomain {
     private UserActivity userActivities;
     private List<UserRole> userRoles;
 
+    public User(UserRegistrationCmd cmd) {
+        this.id = EvoIdUtils.nextId();
+        this.userName = cmd.getUserName();
+        this.userPass = cmd.getUserPass();
+        this.isActive = EActive.ACTIVE.value;
+        this.updateUserDetail(cmd.getUserDetailCmd());
+        this.updateUserRole(cmd.getUserRoleCmds());
+    }
+
     public User(UserCmd cmd) {
         this.id = EvoIdUtils.nextId();
         this.userName = cmd.getUserName();
@@ -83,16 +92,18 @@ public class User extends AuditableDomain {
         }
     }
 
-    public User(UserRegistrationCmd cmd) {
-        this.id = EvoIdUtils.nextId();
-        this.userName = cmd.getUserName();
-        this.userPass = cmd.getUserPass();
-        this.isActive = EActive.ACTIVE.value;
-        this.updateUserDetail(cmd.getUserDetailCmd());
-    }
-
     public void saveTokenInfo(TokenInfoCmd cmd) {
         this.tokenInfo = new TokenInfo(cmd);
+    }
+
+    public void delete() {
+        this.isActive = EActive.INACTIVE.value;
+        this.userRoles.forEach(UserRole::delete);
+    }
+
+    public void restore() {
+        this.isActive = EActive.ACTIVE.value;
+        this.userRoles.forEach(UserRole::restore);
     }
 
     public void enrichUserRole(List<UserRole> userRoles) {

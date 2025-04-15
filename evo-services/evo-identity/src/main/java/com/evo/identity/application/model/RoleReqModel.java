@@ -25,7 +25,7 @@ public class RoleReqModel {
     private String description;
 
     @NotNull(message = "INPUT_ERROR_001")
-    private Long root;
+    private Long isRoot;
 
     @NotBlank(message = "INPUT_ERROR_001")
     private String type;

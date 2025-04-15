@@ -21,7 +21,7 @@ public class Role extends AuditableDomain {
     private UUID id;
     private String name;
     private String description;
-    private Long root;
+    private Long isRoot;
     private Long isActive;
     private Long isDefault;
     private String type;
@@ -31,7 +31,7 @@ public class Role extends AuditableDomain {
         this.id = EvoIdUtils.nextId();
         this.name = cmd.getName();
         this.description = cmd.getDescription();
-        this.root = cmd.getRoot();
+        this.isRoot = cmd.getIsRoot();
         this.isActive = EActive.ACTIVE.value;
         this.isDefault = cmd.getIsDefault();
         this.type = cmd.getType();
@@ -41,7 +41,7 @@ public class Role extends AuditableDomain {
     public void update(RoleCmd cmd) {
         this.name = cmd.getName();
         this.description = cmd.getDescription();
-        this.root = cmd.getRoot();
+        this.isRoot = cmd.getIsRoot();
         this.type = cmd.getType();
         this.updateRolePermission(cmd.getRolePermissionCmds());
     }

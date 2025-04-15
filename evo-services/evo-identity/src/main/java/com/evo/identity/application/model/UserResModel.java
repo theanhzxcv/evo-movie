@@ -15,7 +15,10 @@ import java.util.UUID;
 public class UserResModel {
     private UUID id;
     private String userName;
+    private String userPass;
     private Long isActive;
+    private Long isTfaEnabled;
+    private String secretKey;
     private UserDetailResModel userDetail;
     private List<UUID> roleIds;
 }

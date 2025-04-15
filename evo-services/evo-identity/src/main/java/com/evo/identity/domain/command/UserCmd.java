@@ -16,6 +16,9 @@ public class UserCmd {
     private UUID id;
     private String userName;
     private String userPass;
+    private Long isActive;
+    private String secretKey;
+    private Long isTfaEnabled;
     private UserDetailCmd userDetailCmd;
     private List<UserRoleCmd> userRoleCmds;
 }

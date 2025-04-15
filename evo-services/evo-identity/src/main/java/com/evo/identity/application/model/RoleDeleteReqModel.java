@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDeleteReqModel {
-    private UUID currentId;
-    private UUID newId;
+    private UUID currentRoleId;
+    private UUID newRoleId;
 }

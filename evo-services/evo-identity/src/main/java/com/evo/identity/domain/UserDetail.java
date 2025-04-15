@@ -23,8 +23,8 @@ public class UserDetail extends AuditableDomain {
     private UUID avatarId;
     private String firstName;
     private String lastName;
+    private String emailVerified;
     private String email;
-    private String emailChange;
     private String linkVerify;
     private Instant linkExpireTime;
     private Long isVerified;
@@ -34,19 +34,19 @@ public class UserDetail extends AuditableDomain {
         this.userId = cmd.getUserId();
         this.firstName = cmd.getFirstName();
         this.lastName = cmd.getLastName();
-        this.emailChange = cmd.getEmailChange();
+        this.email = cmd.getEmail();
         this.isVerified = EVerify.UNVERIFIED.value;
     }
 
     public void update(UserDetailCmd cmd) {
         this.firstName = cmd.getFirstName();
         this.lastName = cmd.getLastName();
-        this.emailChange = cmd.getEmailChange();
+        this.email = cmd.getEmail();
     }
 
     public void verify() {
-        this.email = this.emailChange;
-        this.emailChange = null;
+        this.emailVerified = this.email;
+        this.email = null;
         this.linkVerify = null;
         this.linkExpireTime = null;
     }

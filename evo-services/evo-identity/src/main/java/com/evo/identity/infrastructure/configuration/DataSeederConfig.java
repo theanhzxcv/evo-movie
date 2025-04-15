@@ -72,7 +72,7 @@ public class DataSeederConfig implements CommandLineRunner {
             UserDetailCmd userDetailCmd = new UserDetailCmd();
             userDetailCmd.setFirstName(adminName);
             userDetailCmd.setLastName(adminName);
-            userDetailCmd.setEmailChange(adminEmail);
+            userDetailCmd.setEmail(adminEmail);
             userCmd.setUserDetailCmd(userDetailCmd);
 
             List<String> roleNames = List.of(RoleConstants.ADMIN_ROLE_NAME,
@@ -141,7 +141,7 @@ public class DataSeederConfig implements CommandLineRunner {
         roleCmd.setId(EvoIdUtils.nextId());
         roleCmd.setName(roleName);
         roleCmd.setDescription(roleDescription);
-        roleCmd.setRoot(roleRoot);
+        roleCmd.setIsRoot(roleRoot);
         roleCmd.setType(roleType);
         roleCmd.setIsDefault(EDefault.DEFAULT.value);
 

@@ -31,8 +31,8 @@ public class RoleEntity extends AuditableEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "ROOT")
-    private Long root;
+    @Column(name = "IS_ROOT")
+    private Long isRoot;
 
     @Column(name = "IS_ACTIVE")
     private Long isActive;

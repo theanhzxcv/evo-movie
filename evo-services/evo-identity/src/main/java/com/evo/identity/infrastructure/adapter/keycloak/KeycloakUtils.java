@@ -64,7 +64,7 @@ public class KeycloakUtils {
         UserDetailCmd userDetailCmd = cmd.getUserDetailCmd();
         Map<String, Object> userPayload = new HashMap<>();
         userPayload.put("username", cmd.getUserName());
-        userPayload.put("email", userDetailCmd.getEmailChange());
+        userPayload.put("email", userDetailCmd.getEmail());
         userPayload.put("firstName", userDetailCmd.getFirstName());
         userPayload.put("lastName", userDetailCmd.getLastName());
         userPayload.put("enabled", true);

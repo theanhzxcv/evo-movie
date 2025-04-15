@@ -5,13 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDetailResModel {
+    private UUID id;
+    private UUID userId;
+    private String emailVerified;
     private String email;
-    private String fullName;
-    private String phoneNumber;
-    private String dateOfBirth;
+    private String firstName;
+    private String lastName;
+    private Long isVerified;
 }

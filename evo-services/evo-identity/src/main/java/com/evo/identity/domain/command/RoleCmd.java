@@ -17,9 +17,9 @@ public class RoleCmd {
     private UUID id;
     private String name;
     private String description;
-    private Long root;
-    private String type;
+    private Long isRoot;
     private Long isActive;
     private Long isDefault;
+    private String type;
     private List<RolePermissionCmd> rolePermissionCmds;
 }

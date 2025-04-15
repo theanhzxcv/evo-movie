@@ -13,11 +13,11 @@ import lombok.Setter;
 @Setter
 public class RegistrationReqModel {
     @NotBlank(message = "INPUT_ERROR_001")
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     private String userName;
 
     @NotBlank(message = "INPUT_ERROR_001")
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     @Email(message = "EMAIL_ERROR_001")
     private String userEmail;
 
@@ -30,10 +30,10 @@ public class RegistrationReqModel {
     private String userPass;
 
     @NotBlank(message = "INPUT_ERROR_001")
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     private String firstName;
 
     @NotBlank(message = "INPUT_ERROR_001")
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     private String lastName;
 }

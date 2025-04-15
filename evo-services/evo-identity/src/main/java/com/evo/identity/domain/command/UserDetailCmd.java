@@ -16,7 +16,12 @@ import java.util.UUID;
 public class UserDetailCmd {
     private UUID id;
     private UUID userId;
-    private String emailChange;
+    private UUID avatarId;
     private String firstName;
     private String lastName;
+    private String emailVerified;
+    private String email;
+    private String linkVerify;
+    private Instant linkExpireTime;
+    private Long isVerified;
 }

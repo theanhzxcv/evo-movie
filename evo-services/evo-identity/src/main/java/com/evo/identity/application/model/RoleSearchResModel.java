@@ -16,7 +16,7 @@ public class RoleSearchResModel {
     private UUID id;
     private String name;
     private String description;
-    private Long root;
+    private Long isRoot;
     private Long isActive;
     private Long isDefault;
     private String type;

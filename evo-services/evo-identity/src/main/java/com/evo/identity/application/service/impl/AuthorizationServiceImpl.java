@@ -113,7 +113,7 @@ public class AuthorizationServiceImpl implements AuthorityService {
         userAuthority.setGrantedPermissions(grantedPermissions);
 
         boolean isRoot = roles.stream()
-                .anyMatch(role -> Objects.equals(ERootRole.ROOT.value, role.getRoot()));
+                .anyMatch(role -> Objects.equals(ERootRole.ROOT.value, role.getIsRoot()));
 
         userAuthority.setIsRoot(isRoot ? ERootRole.ROOT.value : ERootRole.NON_ROOT.value);
 
