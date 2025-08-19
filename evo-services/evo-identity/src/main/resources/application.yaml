@@ -16,12 +16,15 @@ server:
       max-request-size: 2GB
 
 keycloak:
-  enabled: true
+  enabled: false
   realm: EvoMovie
   auth-server-url: http://localhost:8080
   client:
     id: iam-service-client
     secret: VzuvaMvXddYP6YaXnRQVhz4gkLtiUGvh
+
+encryption:
+  key: "anh.nt2*89_nt123"
 
 spring:
   application:
@@ -41,6 +44,10 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 
   #  mail:
@@ -137,7 +144,3 @@ springdoc:
 #      storage:
 #        max-attempts: 3
 #        wait-duration: 5s
-
-#redis:
-#  host: localhost
-#  port: 6379

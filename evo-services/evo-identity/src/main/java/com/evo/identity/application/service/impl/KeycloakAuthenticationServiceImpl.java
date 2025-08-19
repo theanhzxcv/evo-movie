@@ -91,21 +91,19 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
     }
 
     @Override
-    public Map<String, Long> signUp(RegistrationReqModel model) {
+    public Map<String, UUID> signUp(RegistrationReqModel model) {
         if (userEntityRepository.findByUserNameAndIsActive(model.getUserName(), EActive.ACTIVE.value).isPresent()) {
             throw new AppException(ErrConstants.USER_DETAIL_ERROR_002);
         }
 
-        if (userDetailEntityRepository.findByEmail(model.getUserEmail()).isPresent()) {
+        if (userDetailEntityRepository.findByEmail(model.getEmail()).isPresent()) {
             throw new AppException(ErrConstants.USER_DETAIL_ERROR_003);
         }
 
         try {
             UserRegistrationCmd registrationCmd = EvoModelMapperUtils.toObject(model, UserRegistrationCmd.class);
-            UserDetailCmd userDetailCmd = new UserDetailCmd();
-            userDetailCmd.setFirstName(model.getFirstName());
-            userDetailCmd.setLastName(model.getLastName());
-            userDetailCmd.setEmail(model.getUserEmail());
+            UserDetailCmd userDetailCmd = EvoModelMapperUtils.toObject(model, UserDetailCmd.class);
+            userDetailCmd.setEmail(model.getEmail());
             registrationCmd.setUserDetailCmd(userDetailCmd);
             Role role = roleEntityRepository.findByNameAndIsActive(EDefaultRole.USER.value, EActive.ACTIVE.value)
                     .map(roleEntityMapper::toDomain)
@@ -116,8 +114,8 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
             User user = new User(registrationCmd);
             userDomainRepository.save(user);
 
-            Map<String, Long> res = new HashMap<>();
-            res.put("Result", 1L);
+            Map<String, UUID> res = new HashMap<>();
+            res.put("Result", user.getId());
             return res;
         } catch (Exception e){
             throw new AppException(ErrConstants.SYSTEM_ERROR_001);
@@ -125,7 +123,37 @@ public class KeycloakAuthenticationServiceImpl implements AuthenticationService 
     }
 
     @Override
-    public AuthenticationResModel tfaRequired() {
+    public Map<String, Long> enableTfa() {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> disableTfa() {
+        return Map.of();
+    }
+
+    @Override
+    public AuthenticationResModel verifyTfa(int tfaCode) {
+        return null;
+    }
+
+    @Override
+    public Map<String, String> sendVerificationEmail() {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> verifyEmail(String verifyKey) {
+        return Map.of();
+    }
+
+    @Override
+    public Map<String, Long> signOut() {
+        return Map.of();
+    }
+
+    @Override
+    public AuthenticationResModel refreshToken(String refreshToken) {
         return null;
     }
 

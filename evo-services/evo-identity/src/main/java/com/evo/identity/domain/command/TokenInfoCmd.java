@@ -18,5 +18,5 @@ public class TokenInfoCmd {
     private String refreshToken;
     private Long accessTokenExpireAt;
     private Long refreshTokenExpireAt;
-    String type;
+    private String type;
 }

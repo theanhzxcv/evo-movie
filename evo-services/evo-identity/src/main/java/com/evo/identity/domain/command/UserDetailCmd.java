@@ -17,11 +17,19 @@ public class UserDetailCmd {
     private UUID id;
     private UUID userId;
     private UUID avatarId;
+    private String bio;
     private String firstName;
     private String lastName;
+    private String gender;
+    private String phoneNumber;
+    private Date dateOfBirth;
+    private String addressLine;
+    private String province;
+    private String country;
     private String emailVerified;
     private String email;
     private String linkVerify;
-    private Instant linkExpireTime;
+    private Date expireAt;
     private Long isVerified;
+    private Date verifiedAt;
 }

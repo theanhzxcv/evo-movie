@@ -2,7 +2,7 @@ package com.evo.identity.infrastructure.persistence.repository.impl;
 
 import com.evo.identity.domain.query.PermissionQuery;
 import com.evo.identity.infrastructure.persistence.entities.PermissionEntity;
-import com.evo.identity.infrastructure.persistence.repository.PermissionEntityRepositoryCustom;
+import com.evo.identity.infrastructure.persistence.repository.custom.PermissionEntityRepositoryCustom;
 import com.evo.identity.infrastructure.persistence.repository.query.PermissionRepositoryQuery;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

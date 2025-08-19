@@ -1,7 +1,9 @@
 package com.evo.identity.application.enums;
 
 public enum ETokenType {
-    BEARER("Bearer");
+    ACCESS("Access"),
+    RESET("Reset"),
+    TFA("Tfa");
 
     public final String value;
 

@@ -28,4 +28,40 @@ public class AuthenticationController {
         AuthenticationService authenticationService = authServiceFactory.getAuthService();
         return Response.of(authenticationService.signUp(model));
     }
+
+    @PutMapping("/tfa/enable")
+    public Response<Object> enableTfa() {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.enableTfa());
+    }
+
+    @PutMapping("/tfa/disable")
+    public Response<Object> disableTfa() {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.disableTfa());
+    }
+
+    @PostMapping("/tfa/verify")
+    public Response<AuthenticationResModel> verifyTfa(@RequestParam int tfaCode) {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.verifyTfa(tfaCode));
+    }
+
+    @PostMapping("/email/verification/send")
+    public Response<Object> sendVerificationEmail() {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.sendVerificationEmail());
+    }
+
+    @PostMapping("/email/verification/verify")
+    public Response<Object> verifyEmail(@RequestParam String verifyKey) {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.verifyEmail(verifyKey));
+    }
+
+    @PostMapping("/sign-out")
+    public Response<Object> signOut() {
+        AuthenticationService authenticationService = authServiceFactory.getAuthService();
+        return Response.of(authenticationService.signOut());
+    }
 }

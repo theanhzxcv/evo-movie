@@ -10,7 +10,6 @@ import com.evo.identity.domain.Role;
 import com.evo.identity.domain.RolePermission;
 import com.evo.identity.domain.User;
 import com.evo.identity.domain.UserRole;
-import com.evo.identity.infrastructure.persistence.entities.RoleEntity;
 import com.evo.identity.infrastructure.persistence.entities.UserEntity;
 import com.evo.identity.infrastructure.persistence.mapper.PermissionEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.RoleEntityMapperImpl;
@@ -22,7 +21,7 @@ import com.evo.identity.infrastructure.persistence.repository.RoleEntityReposito
 import com.evo.identity.infrastructure.persistence.repository.RolePermissionEntityRepository;
 import com.evo.identity.infrastructure.persistence.repository.UserEntityRepository;
 import com.evo.identity.infrastructure.persistence.repository.UserRoleEntityRepository;
-import com.evo.security.AuthorityService;
+import com.evo.security.validation.AuthorityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

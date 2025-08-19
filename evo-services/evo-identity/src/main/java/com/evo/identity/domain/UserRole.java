@@ -29,6 +29,11 @@ public class UserRole extends AuditableDomain {
         this.isActive = EActive.ACTIVE.value;
     }
 
+    public void update(UserRoleCmd cmd) {
+        this.userId = cmd.getUserId();
+        this.roleId = cmd.getRoleId();
+    }
+
     public void delete() {
         this.isActive = EActive.INACTIVE.value;
     }

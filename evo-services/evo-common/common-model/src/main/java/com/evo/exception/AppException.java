@@ -16,4 +16,9 @@ public class AppException extends RuntimeException {
         this.errCode = errConstants.getErrCode();
         this.errDesc = errConstants.getErrDesc();
     }
+
+    public AppException(String errCode, String message) {
+        this.errCode = errCode;
+        this.errDesc = message;
+    }
 }

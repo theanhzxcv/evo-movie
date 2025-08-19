@@ -5,14 +5,17 @@ import com.evo.exception.AppException;
 import com.evo.identity.domain.User;
 import com.evo.identity.domain.repository.UserDomainRepository;
 import com.evo.identity.infrastructure.persistence.entities.TokenInfoEntity;
+import com.evo.identity.infrastructure.persistence.entities.UserActivityEntity;
 import com.evo.identity.infrastructure.persistence.entities.UserDetailEntity;
 import com.evo.identity.infrastructure.persistence.entities.UserEntity;
 import com.evo.identity.infrastructure.persistence.entities.UserRoleEntity;
 import com.evo.identity.infrastructure.persistence.mapper.TokenInfoEntityMapperImpl;
+import com.evo.identity.infrastructure.persistence.mapper.UserActivityEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserDetailEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserRoleEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.repository.TokenInfoEntityRepository;
+import com.evo.identity.infrastructure.persistence.repository.UserActivityEntityRepository;
 import com.evo.identity.infrastructure.persistence.repository.UserDetailEntityRepository;
 import com.evo.identity.infrastructure.persistence.repository.UserEntityRepository;
 import com.evo.identity.infrastructure.persistence.repository.UserRoleEntityRepository;
@@ -32,31 +35,37 @@ public class UserDomainRepositoryImpl
     private final UserEntityMapperImpl userEntityMapper;
     private final UserDetailEntityMapperImpl userDetailEntityMapper;
     private final TokenInfoEntityMapperImpl tokenInfoEntityMapper;
+    private final UserActivityEntityRepository userActivityEntityRepository;
     private final UserRoleEntityMapperImpl userRoleEntityMapper;
 
     private final UserEntityRepository userEntityRepository;
     private final UserDetailEntityRepository userDetailEntityRepository;
     private final TokenInfoEntityRepository tokenInfoEntityRepository;
+    private final UserActivityEntityMapperImpl userActivityEntityMapper;
     private final UserRoleEntityRepository userRoleEntityRepository;
 
 
     protected UserDomainRepositoryImpl(UserEntityRepository userEntityRepository,
                                        UserDetailEntityRepository userDetailEntityRepository,
                                        TokenInfoEntityRepository tokenInfoEntityRepository,
+                                       UserActivityEntityRepository userActivityEntityRepository,
                                        UserRoleEntityRepository userRoleEntityRepository,
                                        UserEntityMapperImpl userEntityMapper,
                                        UserDetailEntityMapperImpl userDetailEntityMapper,
                                        TokenInfoEntityMapperImpl tokenInfoEntityMapper,
+                                       UserActivityEntityMapperImpl userActivityEntityMapper,
                                        UserRoleEntityMapperImpl userRoleEntityMapper) {
         super(userEntityRepository, userEntityMapper);
         this.userEntityMapper = userEntityMapper;
         this.userDetailEntityMapper = userDetailEntityMapper;
         this.tokenInfoEntityMapper = tokenInfoEntityMapper;
+        this.userActivityEntityRepository = userActivityEntityRepository;
         this.userRoleEntityMapper = userRoleEntityMapper;
 
         this.userEntityRepository = userEntityRepository;
         this.userDetailEntityRepository = userDetailEntityRepository;
         this.tokenInfoEntityRepository = tokenInfoEntityRepository;
+        this.userActivityEntityMapper = userActivityEntityMapper;
         this.userRoleEntityRepository = userRoleEntityRepository;
     }
 
@@ -73,6 +82,11 @@ public class UserDomainRepositoryImpl
         if (!ObjectUtils.isEmpty(user.getTokenInfo())) {
             TokenInfoEntity tokenInfoEntity = tokenInfoEntityMapper.toEntity(user.getTokenInfo());
             tokenInfoEntityRepository.save(tokenInfoEntity);
+        }
+
+        if (!ObjectUtils.isEmpty(user.getUserActivity())) {
+            UserActivityEntity userActivityEntity = userActivityEntityMapper.toEntity(user.getUserActivity());
+            userActivityEntityRepository.save(userActivityEntity);
         }
 
         if (!CollectionUtils.isEmpty(user.getUserRoles())) {

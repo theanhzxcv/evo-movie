@@ -1,6 +1,6 @@
-package com.evo.security;
+package com.evo.security.validation;
 
-public interface BlacklistedToken {
+public interface BlacklistedTokenService {
 
     void blacklistedAccessToken(String accessToken, long expirationDuration);
 

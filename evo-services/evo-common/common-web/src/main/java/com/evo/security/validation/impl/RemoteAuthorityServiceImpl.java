@@ -3,7 +3,7 @@
 //import com.evo.UserAuthority;
 //import com.evo.client.IamClient;
 //import com.evo.dtos.responses.Response;
-//import com.evo.security.AuthorityService;
+//import com.evo.security.validation.AuthorityService;
 //import org.springframework.stereotype.Service;
 //
 //import java.util.UUID;

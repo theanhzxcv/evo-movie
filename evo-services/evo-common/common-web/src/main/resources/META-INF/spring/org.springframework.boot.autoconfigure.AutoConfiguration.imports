@@ -6,5 +6,5 @@ com.evo.security.HttpSecurityConfiguration
 com.evo.security.JwkAuthManagerResolver
 com.evo.security.CustomAuthenticationFilter
 com.evo.security.ForbiddenTokenFilter
-com.evo.security.impl.BlacklistedTokenService
+com.evo.security.validation.impl.BlacklistedTokenServiceImpl
 com.evo.security.GlobalExceptionHandler

@@ -4,6 +4,7 @@ import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
 import com.evo.identity.application.enums.EDefault;
+import com.evo.identity.application.enums.EResponseStatus;
 import com.evo.identity.application.model.AssignPermissionResModel;
 import com.evo.identity.application.model.RoleDeleteReqModel;
 import com.evo.identity.application.model.RoleDetailResModel;
@@ -14,22 +15,20 @@ import com.evo.identity.application.model.RoleSearchResModel;
 import com.evo.identity.application.service.RoleService;
 import com.evo.identity.domain.Role;
 import com.evo.identity.domain.RolePermission;
-import com.evo.identity.domain.UserRole;
+import com.evo.identity.domain.User;
 import com.evo.identity.domain.command.RoleCmd;
 import com.evo.identity.domain.command.RolePermissionCmd;
-import com.evo.identity.domain.command.UserRoleCmd;
 import com.evo.identity.domain.query.RoleQuery;
 import com.evo.identity.domain.repository.RoleDomainRepository;
 import com.evo.identity.infrastructure.persistence.entities.RoleEntity;
-import com.evo.identity.infrastructure.persistence.entities.UserEntity;
 import com.evo.identity.infrastructure.persistence.mapper.RoleEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.RolePermissionEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.UserRoleEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.repository.RoleEntityRepository;
-import com.evo.identity.infrastructure.persistence.repository.RoleEntityRepositoryCustom;
+import com.evo.identity.infrastructure.persistence.repository.custom.RoleEntityRepositoryCustom;
 import com.evo.identity.infrastructure.persistence.repository.RolePermissionEntityRepository;
-import com.evo.identity.infrastructure.persistence.repository.UserEntityRepositoryCustom;
+import com.evo.identity.infrastructure.persistence.repository.custom.UserEntityRepositoryCustom;
 import com.evo.identity.infrastructure.persistence.repository.UserRoleEntityRepository;
 import com.evo.util.EvoModelMapperUtils;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class RoleServiceImpl implements RoleService {
         roleDomainRepository.save(role);
 
         Map<String, Long> res = new HashMap<>();
-        res.put("success", 1L);
+        res.put("status", EResponseStatus.SUCCESS.value);
 
         return res;
     }
@@ -118,15 +117,19 @@ public class RoleServiceImpl implements RoleService {
                 throw new AppException(ErrConstants.CHANGE_ROLE_ERROR_001);
             }
 
-            List<UserEntity> userEntities = userEntityRepositoryCustom.searchUsersByRoleId(role.getId());
-            List<UserRole> userRoles = userRoleEntityRepository.findByUserIdIn(userEntities.stream()
-                    .map(UserEntity::getId).toList()).stream()
-                    .map(userRoleEntityMapper::toDomain)
+            List<User> users = userEntityRepositoryCustom.searchUsersByRoleId(role.getId()).stream()
+                    .map(userEntityMapper::toDomain)
                     .toList();
-            UserRoleCmd userRoleCmd = new UserRoleCmd();
-            for (UserRole userRole : userRoles) {
-                userRoleCmd.setRoleId(newRole.getId());
-            }
+
+//            List<UserRole> userRoles = userRoleEntityRepository.findByUserIdIn(userEntities.stream()
+//                    .map(UserEntity::getId).toList()).stream()
+//                    .map(userRoleEntityMapper::toDomain)
+//                    .toList();
+//            UserRoleCmd userRoleCmd = new UserRoleCmd();
+//            for (UserRole userRole : userRoles) {
+//                userRoleCmd.setUserId();
+//                userRoleCmd.setRoleId(newRole.getId());
+//            }
 
         }
         role.delete();

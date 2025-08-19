@@ -4,12 +4,14 @@ import com.evo.configuration.AuditableDomain;
 import com.evo.identity.application.enums.EActive;
 import com.evo.identity.domain.command.RolePermissionCmd;
 import com.evo.identity.domain.command.TokenInfoCmd;
+import com.evo.identity.domain.command.UserActivityCmd;
 import com.evo.identity.domain.command.UserCmd;
 import com.evo.identity.domain.command.UserDetailCmd;
 import com.evo.identity.domain.command.UserRegistrationCmd;
 import com.evo.identity.domain.command.UserRoleCmd;
 import com.evo.util.EvoIdUtils;
 import lombok.*;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,7 @@ public class User extends AuditableDomain {
     private Long isTfaEnabled;
     private UserDetail userDetail;
     private TokenInfo tokenInfo;
-    private UserActivity userActivities;
+    private UserActivity userActivity;
     private List<UserRole> userRoles;
 
     public User(UserRegistrationCmd cmd) {
@@ -51,8 +53,50 @@ public class User extends AuditableDomain {
 
     public void update(UserCmd cmd) {
         this.userName = cmd.getUserName();
+        if (!ObjectUtils.isEmpty(cmd.getUserDetailCmd())) {
+            this.updateUserDetail(cmd.getUserDetailCmd());
+        }
+        if (!ObjectUtils.isEmpty(cmd.getUserRoleCmds())) {
+            this.updateUserRole(cmd.getUserRoleCmds());
+        }
+        if (!ObjectUtils.isEmpty(cmd.getUserActivityCmd())) {
+            this.saveUserActivity(cmd.getUserActivityCmd());
+        }
+        if (!ObjectUtils.isEmpty(cmd.getTokenInfoCmd())) {
+            this.saveTokenInfo(cmd.getTokenInfoCmd());
+        }
+    }
+
+    public void changePassword(UserCmd cmd) {
+        this.userPass = cmd.getUserPass();
+    }
+
+    public void enableTfa(UserCmd cmd) {
+        this.isTfaEnabled = cmd.getIsTfaEnabled();
+        this.secretKey = cmd.getSecretKey();
+    }
+
+    public void disableTfa(UserCmd cmd) {
+        this.isTfaEnabled = cmd.getIsTfaEnabled();
+        this.secretKey = cmd.getSecretKey();
+    }
+
+    public void saveVerificationLink(UserCmd cmd) {
         this.updateUserDetail(cmd.getUserDetailCmd());
-        this.updateUserRole(cmd.getUserRoleCmds());
+    }
+
+    public void verifiedUser(UserCmd cmd) {
+        this.updateUserDetail(cmd.getUserDetailCmd());
+    }
+
+    public void delete() {
+        this.isActive = EActive.INACTIVE.value;
+        this.userRoles.forEach(UserRole::delete);
+    }
+
+    public void restore() {
+        this.isActive = EActive.ACTIVE.value;
+        this.userRoles.forEach(UserRole::restore);
     }
 
     public void updateUserRole(List<UserRoleCmd> cmds) {
@@ -66,20 +110,22 @@ public class User extends AuditableDomain {
 
         this.userRoles.forEach(UserRole::delete);
 
-        for (UserRoleCmd cmd : cmds) {
-            UserRole existingRole = this.userRoles.stream()
-                    .filter(ur -> ur.getRoleId().equals(cmd.getRoleId()))
-                    .findFirst()
-                    .orElseGet(() -> {
-                        UserRoleCmd newCmd = new UserRoleCmd();
-                        newCmd.setId(EvoIdUtils.nextId());
-                        newCmd.setUserId(this.id);
-                        newCmd.setRoleId(cmd.getRoleId());
-                        UserRole userRole = new UserRole(newCmd);
-                        this.userRoles.add(userRole); // Now safe
-                        return userRole;
-                    });
-            existingRole.restore();
+        if (!ObjectUtils.isEmpty(cmds)) {
+            for (UserRoleCmd cmd : cmds) {
+                UserRole existingRole = this.userRoles.stream()
+                        .filter(ur -> ur.getRoleId().equals(cmd.getRoleId()))
+                        .findFirst()
+                        .orElseGet(() -> {
+                            UserRoleCmd newCmd = new UserRoleCmd();
+                            newCmd.setId(EvoIdUtils.nextId());
+                            newCmd.setUserId(this.id);
+                            newCmd.setRoleId(cmd.getRoleId());
+                            UserRole userRole = new UserRole(newCmd);
+                            this.userRoles.add(userRole); // Now safe
+                            return userRole;
+                        });
+                existingRole.restore();
+            }
         }
     }
 
@@ -96,17 +142,20 @@ public class User extends AuditableDomain {
         this.tokenInfo = new TokenInfo(cmd);
     }
 
-    public void delete() {
-        this.isActive = EActive.INACTIVE.value;
-        this.userRoles.forEach(UserRole::delete);
+    public void saveUserActivity(UserActivityCmd cmd) {
+        if (this.userActivity == null) {
+            cmd.setUserName(this.userName);
+            this.userActivity = new UserActivity(cmd);
+        } else {
+            this.userActivity.update(cmd);
+        }
     }
 
-    public void restore() {
-        this.isActive = EActive.ACTIVE.value;
-        this.userRoles.forEach(UserRole::restore);
-    }
+    public void enrichUserDetail(UserDetail userDetail) {this.userDetail = userDetail;}
 
     public void enrichUserRole(List<UserRole> userRoles) {
         this.userRoles = userRoles;
     }
+
+    public void enrichUserActivity(UserActivity userActivity) {this.userActivity = userActivity;}
 }

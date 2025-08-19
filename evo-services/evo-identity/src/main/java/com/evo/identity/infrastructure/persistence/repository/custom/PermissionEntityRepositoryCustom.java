@@ -1,4 +1,4 @@
-package com.evo.identity.infrastructure.persistence.repository;
+package com.evo.identity.infrastructure.persistence.repository.custom;
 
 import com.evo.identity.domain.query.PermissionQuery;
 import com.evo.identity.infrastructure.persistence.entities.PermissionEntity;

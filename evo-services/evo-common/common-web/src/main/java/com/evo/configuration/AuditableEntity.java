@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -39,7 +41,7 @@ public class AuditableEntity implements Serializable {
     @CreatedDate
     @CreationTimestamp
     @Column(name = "CREATED_AT", updatable = false)
-    protected Instant createdAt;
+    protected Date createdAt;
 
     @LastModifiedBy
     @Column(name = "UPDATED_BY")
@@ -48,5 +50,5 @@ public class AuditableEntity implements Serializable {
     @LastModifiedDate
     @UpdateTimestamp
     @Column(name = "UPDATED_AT")
-    protected Instant updatedAt;
+    protected Date updatedAt;
 }

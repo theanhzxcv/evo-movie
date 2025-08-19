@@ -2,6 +2,8 @@ package com.evo.security;
 
 import com.evo.UserAuthentication;
 import com.evo.UserAuthority;
+import com.evo.security.validation.AuthorityService;
+import com.evo.security.validation.ValidationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +18,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -27,16 +28,17 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 @Component
 @Slf4j
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
     private final AuthorityService authorityService;
+    private final ValidationService validationService;
 
-    public CustomAuthenticationFilter(AuthorityService authorityService) {
+    public CustomAuthenticationFilter(AuthorityService authorityService, ValidationService validationService) {
         this.authorityService = authorityService;
+        this.validationService = validationService;
     }
 
     @Override
@@ -70,7 +72,6 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
         String username = StringUtils.hasText(token.getClaimAsString("email"))
                 ? token.getClaimAsString("preferred_username")
                 : token.getClaimAsString("sub");
-
 
         User principal = new User(username, "", grantedPermissions);
         AbstractAuthenticationToken auth =

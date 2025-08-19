@@ -3,6 +3,7 @@ package com.evo.identity.application.service.impl;
 import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.application.enums.EActive;
+import com.evo.identity.application.enums.EResponseStatus;
 import com.evo.identity.application.model.PermissionReqModel;
 import com.evo.identity.application.model.PermissionResModel;
 import com.evo.identity.application.model.PermissionSearchReqModel;
@@ -14,7 +15,7 @@ import com.evo.identity.domain.query.PermissionQuery;
 import com.evo.identity.domain.repository.PermissionDomainRepository;
 import com.evo.identity.infrastructure.persistence.mapper.PermissionEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.repository.PermissionEntityRepository;
-import com.evo.identity.infrastructure.persistence.repository.PermissionEntityRepositoryCustom;
+import com.evo.identity.infrastructure.persistence.repository.custom.PermissionEntityRepositoryCustom;
 import com.evo.util.EvoModelMapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,7 +49,7 @@ public class PermissionServiceImpl implements PermissionService {
         permissionDomainRepository.save(permission);
 
         Map<String, Long> res = new HashMap<>();
-        res.put("success", 1L);
+        res.put("status", EResponseStatus.SUCCESS.value);
 
         return res;
     }
