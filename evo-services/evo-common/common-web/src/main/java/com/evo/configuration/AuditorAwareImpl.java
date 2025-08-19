@@ -22,7 +22,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
                 || authentication instanceof AnonymousAuthenticationToken) {
             return Optional.of("System");
         } else {
-            String username = EvoSecurityUtils.getCurrentUser().orElse("");
+            String username = EvoSecurityUtils.getCurrentUserName();
             return Optional.of(username);
         }
     }

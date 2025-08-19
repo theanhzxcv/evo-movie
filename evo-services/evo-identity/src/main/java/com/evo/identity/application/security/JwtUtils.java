@@ -42,11 +42,11 @@ public class JwtUtils {
     }
 
     public String generateAccessToken(User user) throws Exception {
-        return generateToken(user, ETokenExpiration.ACCESS_TOKEN.value * 1000L);
+        return generateToken(user, ETokenExpiration.ACCESS_TOKEN.value);
     }
 
     public String generateRefreshToken(User user) throws Exception {
-        return generateToken(user, ETokenExpiration.REFRESH_TOKEN.value * 1000L);
+        return generateToken(user, ETokenExpiration.REFRESH_TOKEN.value);
     }
 
     public Claims extractClaims(String token) {
@@ -61,6 +61,10 @@ public class JwtUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getTokenJti(String token) {
+        return extractClaims(token).getId();
     }
 
     public String extractUserName(String token) {

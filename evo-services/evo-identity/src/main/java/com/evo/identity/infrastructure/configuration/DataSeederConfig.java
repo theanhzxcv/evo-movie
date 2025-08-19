@@ -16,11 +16,13 @@ import com.evo.identity.domain.command.RoleCmd;
 import com.evo.identity.domain.command.RolePermissionCmd;
 import com.evo.identity.domain.command.UserCmd;
 import com.evo.identity.domain.command.UserDetailCmd;
+import com.evo.identity.domain.command.UserRegistrationCmd;
 import com.evo.identity.domain.command.UserRoleCmd;
 import com.evo.identity.domain.repository.PermissionDomainRepository;
 import com.evo.identity.domain.repository.RoleDomainRepository;
 import com.evo.identity.domain.repository.UserDomainRepository;
 import com.evo.identity.infrastructure.adapter.keycloak.KeycloakUtils;
+import com.evo.identity.infrastructure.adapter.tfa.TfaService;
 import com.evo.identity.infrastructure.persistence.mapper.PermissionEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.mapper.RoleEntityMapperImpl;
 import com.evo.identity.infrastructure.persistence.repository.PermissionEntityRepository;
@@ -42,8 +44,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DataSeederConfig implements CommandLineRunner {
 
+    private final TfaService tfaService;
     private final KeycloakUtils keycloakUtils;
-//    private final TfaService tfaService;
     private final PasswordEncoder passwordEncoder;
     private final UserEntityRepository userEntityRepository;
     private final UserDomainRepository userDomainRepository;
@@ -93,7 +95,9 @@ public class DataSeederConfig implements CommandLineRunner {
             }
             userCmd.setUserRoleCmds(userRoleCmds);
 //        creationCmd.setSecretKey(tfaService.generateSecretKey());
-//        keycloakUtils.registrationWithKeycloak(creationCmd);
+            UserRegistrationCmd registrationCmd = EvoModelMapperUtils.toObject(userCmd, UserRegistrationCmd.class);
+            registrationCmd.setUserPass(adminPass);
+//            keycloakUtils.registrationWithKeycloak(registrationCmd);
             userCmd.setUserPass(passwordEncoder.encode(adminPass));
             User adminUser = new User(userCmd);
 

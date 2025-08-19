@@ -1,6 +1,5 @@
-package com.evo.security.impl;
+package com.evo.security.validation.impl;
 
-import com.evo.security.BlacklistedToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class BlacklistedTokenService implements BlacklistedToken {
+public class BlacklistedTokenServiceImpl implements com.evo.security.validation.BlacklistedTokenService {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final static String INVALID_REFRESH_TOKEN_CACHE = "invalid-refresh-token";
@@ -20,7 +19,7 @@ public class BlacklistedTokenService implements BlacklistedToken {
         redisTemplate.opsForValue().set(accessToken,
                 INVALID_TOKEN_CACHE,
                 expirationDuration,
-                TimeUnit.MILLISECONDS);
+                TimeUnit.SECONDS);
     }
 
     @Override
@@ -28,7 +27,7 @@ public class BlacklistedTokenService implements BlacklistedToken {
         redisTemplate.opsForValue().set(refreshToken,
                 INVALID_REFRESH_TOKEN_CACHE,
                 expirationDuration,
-                TimeUnit.MILLISECONDS);
+                TimeUnit.SECONDS);
     }
 
     @Override

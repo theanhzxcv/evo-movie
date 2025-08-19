@@ -1,6 +1,6 @@
 package com.evo.util;
 
-public class EvoStringUtils {
+public final class EvoStringUtils {
 
     public static boolean isEmpty(String str) {
         return str == null || str.trim().isEmpty();

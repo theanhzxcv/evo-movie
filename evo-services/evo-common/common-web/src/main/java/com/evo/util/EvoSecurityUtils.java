@@ -17,6 +17,12 @@ public final class EvoSecurityUtils {
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
+    public static String getCurrentUserName() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        return authentication.getName();
+    }
+
     private static String extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;

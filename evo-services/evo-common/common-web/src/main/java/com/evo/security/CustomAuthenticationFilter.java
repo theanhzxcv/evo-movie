@@ -2,6 +2,8 @@ package com.evo.security;
 
 import com.evo.UserAuthentication;
 import com.evo.UserAuthority;
+import com.evo.security.validation.AuthorityService;
+import com.evo.security.validation.ValidationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +18,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -33,9 +34,11 @@ import java.util.Set;
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private static final Logger logger = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
     private final AuthorityService authorityService;
+    private final ValidationService validationService;
 
-    public CustomAuthenticationFilter(AuthorityService authorityService) {
+    public CustomAuthenticationFilter(AuthorityService authorityService, ValidationService validationService) {
         this.authorityService = authorityService;
+        this.validationService = validationService;
     }
 
     @Override
@@ -67,9 +70,8 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
                         grantedPermissions.add(new SimpleGrantedAuthority(permission))));
 
         String username = StringUtils.hasText(token.getClaimAsString("email"))
-                ? token.getClaimAsString("email")
+                ? token.getClaimAsString("preferred_username")
                 : token.getClaimAsString("sub");
-
 
         User principal = new User(username, "", grantedPermissions);
         AbstractAuthenticationToken auth =
@@ -106,11 +108,11 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
     private Optional<UserAuthority> enrichAuthority(Jwt token) {
         String username = StringUtils.hasText(token.getClaimAsString("email"))
-                ? token.getClaimAsString("email")
+                ? token.getClaimAsString("preferred_username")
                 : token.getClaimAsString("sub");
 
         if (!StringUtils.hasText(username)) {
-            log.warn("JWT token does not contain 'email' or 'sub' claim");
+            log.error("JWT token does not contain 'email' or 'sub' claim");
             return Optional.empty();
         }
 

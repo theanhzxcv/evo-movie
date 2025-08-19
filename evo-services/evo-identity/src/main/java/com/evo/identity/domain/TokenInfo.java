@@ -19,7 +19,7 @@ public class TokenInfo extends AuditableDomain {
     private String refreshToken;
     private Long accessTokenExpireAt;
     private Long refreshTokenExpireAt;
-    String type;
+    private String type;
 
     public TokenInfo(TokenInfoCmd cmd) {
         this.id = EvoIdUtils.nextId();
@@ -28,6 +28,6 @@ public class TokenInfo extends AuditableDomain {
         this.refreshToken = cmd.getRefreshToken();
         this.accessTokenExpireAt = cmd.getAccessTokenExpireAt();
         this.refreshTokenExpireAt = cmd.getRefreshTokenExpireAt();
-        this.type = ETokenType.BEARER.value;
+        this.type = cmd.getType();
     }
 }

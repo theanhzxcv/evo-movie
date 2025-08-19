@@ -1,6 +1,6 @@
 package com.evo.security;
 
-import com.evo.security.impl.BlacklistedTokenService;
+import com.evo.security.validation.impl.BlacklistedTokenServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ForbiddenTokenFilter extends OncePerRequestFilter {
 
-    private final BlacklistedTokenService blacklistedTokenService;
+    private final BlacklistedTokenServiceImpl blacklistedTokenService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -40,10 +40,11 @@ public class ForbiddenTokenFilter extends OncePerRequestFilter {
         }
 
         Jwt token = jwtAuthentication.getToken();
-        String tokenValue = token.getTokenValue();
+        String jti = token.getClaimAsString("jti");
 
-        if (blacklistedTokenService.isTokenBlacklisted(tokenValue)) {
-            log.warn("Blocked request with blacklisted token: {}", tokenValue);
+
+        if (blacklistedTokenService.isTokenBlacklisted(jti)) {
+            log.warn("Blocked request with blacklisted token: {}", jti);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
             return;
         }

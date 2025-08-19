@@ -13,4 +13,7 @@ public class AuthenticationResModel {
     private String refreshToken;
     private Long accessTokenExpireAt;
     private Long refreshTokenExpireAt;
+    private String tokenType;
+    private Long isTfaEnabled;
+    private String secretKey;
 }

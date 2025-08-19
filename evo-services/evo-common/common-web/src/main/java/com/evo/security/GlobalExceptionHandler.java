@@ -4,6 +4,7 @@ import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.response.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,7 +16,7 @@ import java.util.Objects;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
-    public Response<Object> handleAppException(AppException ex) {
+    public ResponseEntity<Response<Object>> handleAppException(AppException ex) {
         int status = ex.getStatus() == 0 ? HttpStatus.BAD_REQUEST.value() : ex.getStatus();
 
         Response<Object> appExRes = new Response<>();
@@ -25,34 +26,34 @@ public class GlobalExceptionHandler {
         appExRes.setErrDesc(ex.getErrDesc());
         appExRes.setException(ex);
 
-        return appExRes;
+        return ResponseEntity.status(status).body(appExRes);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Response<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Response<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         String defaultMessage = Objects.requireNonNull(ex.getFieldError()).getDefaultMessage();
         ErrConstants errConst = ErrConstants.valueOf(defaultMessage);
 
-        Response<Object> response = new Response<>();
-        response.setStatusCode(errConst.getStatus().value());
-        response.setStatusDesc(errConst.getStatus().getReasonPhrase());
-        response.setErrCode(errConst.getErrCode());
-        response.setErrDesc(errConst.getErrDesc());
-        response.setException(ex);
+        Response<Object> inputExRes = new Response<>();
+        inputExRes.setStatusCode(errConst.getStatus().value());
+        inputExRes.setStatusDesc(errConst.getStatus().getReasonPhrase());
+        inputExRes.setErrCode(errConst.getErrCode());
+        inputExRes.setErrDesc(errConst.getErrDesc());
+        inputExRes.setException(ex);
 
-        return response;
+        return ResponseEntity.status(errConst.getStatus().value()).body(inputExRes);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public Response<Object> handleAccessDeniedException(AccessDeniedException ex) {
+    public ResponseEntity<Response<Object>> handleAccessDeniedException(AccessDeniedException ex) {
         ErrConstants errConst = ErrConstants.ACCESS_DENIED_001;
 
-        Response<Object> accessDeniedRes = new Response<>();
-        accessDeniedRes.setStatusCode(errConst.getStatus().value());
-        accessDeniedRes.setStatusDesc(errConst.getStatus().getReasonPhrase());
-        accessDeniedRes.setErrCode(errConst.getErrCode());
-        accessDeniedRes.setErrDesc(errConst.getErrDesc());
+        Response<Object> accessDeniedExRes = new Response<>();
+        accessDeniedExRes.setStatusCode(errConst.getStatus().value());
+        accessDeniedExRes.setStatusDesc(errConst.getStatus().getReasonPhrase());
+        accessDeniedExRes.setErrCode(errConst.getErrCode());
+        accessDeniedExRes.setErrDesc(errConst.getErrDesc());
 
-        return accessDeniedRes;
+        return ResponseEntity.status(errConst.getStatus().value()).body(accessDeniedExRes);
     }
 }

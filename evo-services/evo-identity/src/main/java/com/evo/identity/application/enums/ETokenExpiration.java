@@ -1,8 +1,9 @@
 package com.evo.identity.application.enums;
 
 public enum ETokenExpiration {
-    ACCESS_TOKEN(5L * 60L), // 5 min
-    REFRESH_TOKEN(30L * 60L); // 30 min
+    ACCESS_TOKEN(5L * 60L * 1000L), // 5 min
+    REFRESH_TOKEN(30L * 60L * 1000L), // 30 min
+    TFA_TOKEN(60L * 1000L); // 1 min
 
     public final Long value;
 

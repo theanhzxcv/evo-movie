@@ -3,6 +3,7 @@ package com.evo.identity.infrastructure.adapter.keycloak;
 import com.evo.constants.ErrConstants;
 import com.evo.exception.AppException;
 import com.evo.identity.domain.command.UserAuthenticationCmd;
+import com.evo.identity.domain.command.UserCmd;
 import com.evo.identity.domain.command.UserDetailCmd;
 import com.evo.identity.domain.command.UserRegistrationCmd;
 import lombok.RequiredArgsConstructor;
@@ -42,21 +43,6 @@ public class KeycloakUtils {
         return sendLoginRequest(loginUrl, body);
     }
 
-//    public void createUserWithKeycloak(UserCreationCmd cmd) {
-//        String registerUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users";
-//        String adminToken = getAdminToken();
-//
-//        Map<String, Object> userPayload = new HashMap<>();
-//        userPayload.put("username", cmd.getUsername());
-//        userPayload.put("email", cmd.getEmail());
-//        userPayload.put("firstName", cmd.getFirstName());
-//        userPayload.put("lastName", cmd.getLastName());
-//        userPayload.put("enabled", true);
-//        userPayload.put("credentials", List.of(Map.of("type", "password", "value", cmd.getPassword(), "temporary", false)));
-//
-//        sendRegistrationRequest(registerUrl, adminToken, userPayload, HttpMethod.POST);
-//    }
-
     public void registrationWithKeycloak(UserRegistrationCmd cmd) {
         String registerUrl = KeycloakEndpoints.userRegistration(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm());
         String adminToken = getAdminToken();
@@ -73,20 +59,20 @@ public class KeycloakUtils {
         sendRegistrationRequest(registerUrl, adminToken, userPayload, HttpMethod.POST);
     }
 
-//    public void updateKeycloakUser(String email, UserUpdateCmd cmd) {
-//        String userId = getUserIdByEmail(email);
-//        String updateUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users/" + userId;
-//        String adminToken = getAdminToken();
-//
-//        Map<String, Object> userPayload = new HashMap<>();
-//        userPayload.put("username", cmd.getUsername());
-//        userPayload.put("email", email);
-//        userPayload.put("firstName", cmd.getFirstName());
-//        userPayload.put("lastName", cmd.getLastName());
-//        userPayload.put("enabled", true);
-//
-//        sendRegistrationRequest(updateUrl, adminToken, userPayload, HttpMethod.PUT);
-//    }
+    public void updateKeycloakUser(String email, UserCmd cmd) {
+        String userId = getUserIdByEmail(email);
+        String updateUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users/" + userId;
+        String adminToken = getAdminToken();
+
+        UserDetailCmd userDetailCmd = cmd.getUserDetailCmd();
+        Map<String, Object> userPayload = new HashMap<>();
+        userPayload.put("email", cmd.getUserDetailCmd().getEmail());
+        userPayload.put("firstName", userDetailCmd.getFirstName());
+        userPayload.put("lastName", userDetailCmd.getLastName());
+        userPayload.put("enabled", true);
+
+        sendRegistrationRequest(updateUrl, adminToken, userPayload, HttpMethod.PUT);
+    }
 
 //    public void changeKeycloakPassword(PasswordChangeCmd cmd) {
 //        String email = getCurrentUserEmail();
@@ -175,22 +161,22 @@ public class KeycloakUtils {
         }
     }
 
-//    private String getUserIdByEmail(String email) {
-//        String searchUrl = keycloakProperties.getAuthServerUrl() + "/admin/realms/" + keycloakProperties.getRealm() + "/users?email=" + email;
-//        String adminToken = getAdminToken();
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setBearerAuth(adminToken);
-//
-//        ResponseEntity<List> response = restTemplate.exchange(searchUrl, HttpMethod.GET, new HttpEntity<>(headers), List.class);
-//        if (response.getBody() == null || response.getBody().isEmpty()) {
-//            throw new AppException(ErrorCode.USER_NOT_FOUND);
-//        }
-//        return ((Map<String, Object>) response.getBody().get(0)).get("id").toString();
-//    }
+    private String getUserIdByEmail(String email) {
+        String searchUrl = KeycloakEndpoints.userByEmail(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm(), email);
+        String adminToken = getAdminToken();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(adminToken);
+
+        ResponseEntity<List> response = restTemplate.exchange(searchUrl, HttpMethod.GET, new HttpEntity<>(headers), List.class);
+        if (response.getBody() == null || response.getBody().isEmpty()) {
+            throw new AppException(ErrConstants.USER_DETAIL_ERROR_001);
+        }
+        return ((Map<String, Object>) response.getBody().get(0)).get("id").toString();
+    }
 
     private String getAdminToken() {
-        String tokenUrl = keycloakProperties.getAuthServerUrl() + "/realms/" + keycloakProperties.getRealm() + "/protocol/openid-connect/token";
+        String tokenUrl = KeycloakEndpoints.tokenEndpoint(keycloakProperties.getAuthServerUrl(), keycloakProperties.getRealm());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "client_credentials");

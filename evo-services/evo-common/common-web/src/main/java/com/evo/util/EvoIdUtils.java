@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class EvoIdUtils {
+public final class EvoIdUtils {
     public static UUID nextId() {
         return UUID.randomUUID();
     }

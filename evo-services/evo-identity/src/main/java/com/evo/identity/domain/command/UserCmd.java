@@ -21,4 +21,6 @@ public class UserCmd {
     private Long isTfaEnabled;
     private UserDetailCmd userDetailCmd;
     private List<UserRoleCmd> userRoleCmds;
+    private UserActivityCmd userActivityCmd;
+    private TokenInfoCmd tokenInfoCmd;
 }

@@ -45,6 +45,7 @@ public class AdminController {
         return Response.of(roleService.create(roleReqModel));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Update')")
     @PutMapping("/role/{id}")
     public Response<RoleResModel> updateRole(
             @PathVariable("id") UUID id,
@@ -52,16 +53,19 @@ public class AdminController {
         return Response.of(roleService.update(id, roleReqModel));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Delete')")
     @DeleteMapping("/role")
     public Response<RoleResModel> deleteRole(@RequestBody @Valid RoleDeleteReqModel model) {
         return Response.of(roleService.delete(model));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Update')")
     @PutMapping("/role/restore/{id}")
     public Response<RoleResModel> restoreRole(@PathVariable("id") UUID id) {
         return Response.of(roleService.restore(id));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Read')")
     @GetMapping("/role/search")
     public PageResponse<RoleSearchResModel> searchPermissions(RoleSearchReqModel model) {
         Page<RoleSearchResModel> resModels = roleService.search(model);
@@ -72,32 +76,38 @@ public class AdminController {
                 resModels.getTotalElements());
     }
 
+    @PreAuthorize("hasPermission('Role', 'Read')")
     @GetMapping("/role/details/{id}")
     public Response<RoleDetailResModel> roleDetails(@PathVariable("id") UUID id) {
         return Response.of(roleService.details(id));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Read')")
     @GetMapping("/role/assign/{roleId}")
     public Response<List<AssignPermissionResModel>> assignPermission(@PathVariable("roleId") UUID roleId) {
         return Response.of(roleService.getAssignPermissions(roleId));
     }
 
+    @PreAuthorize("hasPermission('Permission', 'Read')")
     @PostMapping("/permission")
     public Response<Object> createPermission(@RequestBody @Valid PermissionReqModel model) {
         return Response.of(permissionService.create(model));
     }
 
+    @PreAuthorize("hasPermission('Permission', 'Update')")
     @PutMapping("/permission/{id}")
     public Response<PermissionResModel> updatePermission(@PathVariable("id") UUID id,
                                                          @Valid @RequestBody PermissionReqModel model) {
         return Response.of(permissionService.update(id, model));
     }
 
+    @PreAuthorize("hasPermission('Permission', 'Delete')")
     @DeleteMapping("/permission/{id}")
     public Response<PermissionResModel> deletePermission(@PathVariable("id") UUID id) {
         return Response.of(permissionService.delete(id));
     }
 
+    @PreAuthorize("hasPermission('Role', 'Update')")
     @PutMapping("/permission/restore/{id}")
     public Response<PermissionResModel> restorePermission(@PathVariable("id") UUID id) {
         return Response.of(permissionService.restore(id));
@@ -114,6 +124,7 @@ public class AdminController {
                 resModels.getTotalElements());
     }
 
+    @PreAuthorize("hasPermission('Role', 'Read')")
     @GetMapping("/permission/details/{id}")
     public Response<PermissionResModel> detailPermission(@PathVariable("id") UUID id) {
         return Response.of(permissionService.details(id));

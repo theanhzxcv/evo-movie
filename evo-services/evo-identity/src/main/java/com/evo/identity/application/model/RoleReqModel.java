@@ -18,10 +18,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class RoleReqModel {
     @NotBlank(message = "INPUT_ERROR_001")
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     private String name;
 
-    @Size(min = 4, max = 255, message = "INPUT_ERROR_002")
+    @Size(min = 1, max = 255, message = "INPUT_ERROR_002")
     private String description;
 
     @NotNull(message = "INPUT_ERROR_001")

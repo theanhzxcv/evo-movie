@@ -1,10 +1,12 @@
 package com.evo.identity.infrastructure.persistence.entities;
 
+import com.evo.configuration.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,11 +14,11 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_ACTIVITY")
-public class UserActivityEntity {
+public class UserActivityEntity extends AuditableEntity {
     @Id
     @Column(name = "ID")
     private UUID id;
@@ -30,9 +32,9 @@ public class UserActivityEntity {
     @Column(name = "LOCK_UNTIL")
     private Instant lockUntil;
 
+    @Column(name = "STATUS")
+    private Long status;
+
     @Column(name = "ACTIVITY")
     private String activity;
-
-    @Column(name = "LOG_AT")
-    private Instant logAt;
 }
